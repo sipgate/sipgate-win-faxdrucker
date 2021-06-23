@@ -1,0 +1,433 @@
+{
+  "host": "api.sipgate.com",
+  "basePath": "/v2",
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the sipgate REST API documentation. We build our applications on this API and we invite you to use it too.",
+    "title": "sipgate API",
+    "version": "2.0.0"
+  },
+  "schemes": ["https"],
+  "paths": {
+    "/sessions/fax": {
+      "post": {
+        "tags": ["sessions"],
+        "summary": "Send a fax",
+        "description": "",
+        "operationId": "sendFax",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": { "$ref": "#/definitions/SendFaxRequest" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": { "$ref": "#/definitions/SendFaxSessionResponse" }
+          },
+          "402": { "description": "Insufficient funds" }
+        },
+        "security": [
+          { "oauth2": ["all", "sessions:write", "sessions:fax:write"] }
+        ]
+      }
+    },
+    "/authorization/userinfo": {
+      "get": {
+        "tags": ["authorization"],
+        "summary": "Get information about the logged in user",
+        "description": "",
+        "operationId": "userinfo",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "token",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": { "$ref": "#/definitions/UserinfoResponse" }
+          },
+          "401": { "description": "Invalid token supplied" }
+        }
+      }
+    },
+    "/{userId}/faxlines": {
+      "get": {
+        "tags": ["faxlines"],
+        "summary": "List all fax lines",
+        "description": "",
+        "operationId": "getUserFaxlines",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "description": "The unique user identifier",
+            "required": true,
+            "type": "string",
+            "x-example": "w0"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": { "$ref": "#/definitions/FaxlinesResponse" }
+          },
+          "403": { "description": "Feature not booked" }
+        },
+        "security": [{ "oauth2": ["all", "faxlines:read"] }]
+      }
+    },
+    "/history/{entryId}": {
+      "get": {
+        "tags": ["history"],
+        "summary": "Get a specific call, fax, SMS or voicemail",
+        "description": "",
+        "operationId": "getHistoryById",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "entryId",
+            "in": "path",
+            "description": "The unique call, fax, sms or voicemail identifier",
+            "required": true,
+            "type": "string",
+            "x-example": "abc123"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": { "$ref": "#/definitions/HistoryEntryResponse" }
+          }
+        },
+        "security": [{ "oauth2": ["all", "history:read"] }]
+      }    
+    },
+      "/groupfaxlines": {
+      "get": {
+        "tags": ["groups"],
+        "summary": "List all group fax lines",
+        "description": "",
+        "operationId": "getGroupFaxlinesForUser",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "The unique user identifier",
+            "required": false,
+            "type": "string",
+            "x-example": "w0"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": { "$ref": "#/definitions/GroupFaxlinesResponse" }
+          }
+        },
+        "security": [
+          { "oauth2": ["all", "groups:read", "groups:faxlines:read"] }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "FaxlineResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "example": "f0"
+        },
+        "alias": {
+          "type": "string",
+          "example": "Alexander Bain's fax"
+        },
+        "tagline": {
+          "type": "string",
+          "example": "Example Ltd."
+        },
+        "canSend": {
+          "type": "boolean",
+          "default": false
+        },
+        "canReceive": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "FaxlinesResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/FaxlineResponse" }
+        }
+      }
+    },
+    "SendFaxRequest": {
+      "type": "object",
+      "required": ["base64Content", "faxlineId", "filename", "recipient"],
+      "properties": {
+        "faxlineId": {
+          "type": "string",
+          "example": "f0"
+        },
+        "recipient": {
+          "type": "string",
+          "example": "+4921112345678"
+        },
+        "filename": {
+          "type": "string",
+          "example": "fax.pdf"
+        },
+        "base64Content": {
+          "type": "string",
+          "example": "TWF5IHRoZSBmb3VydGggYmUgd2l0aCB5b3U=",
+          "minLength": 0,
+          "maxLength": 28330000
+        }
+      }
+    },
+    "SendFaxSessionResponse": {
+      "type": "object",
+      "properties": { "sessionId": { "type": "string" } }
+    },
+    "UserinfoResponse": {
+      "type": "object",
+      "properties": {
+        "sub": {
+          "type": "string",
+          "example": "w0"
+        },
+        "domain": {
+          "type": "string",
+          "example": "sipgate.de"
+        },
+        "masterSipId": {
+          "type": "string",
+          "example": "0000000"
+        },
+        "locale": {
+          "type": "string",
+          "example": "de_DE"
+        }
+      }
+    },
+     "HistoryEntryResponse": {
+    "type": "object",
+    "properties": {
+      "id": { "type": "string", "example": "100001234" },
+      "source": { "type": "string", "example": "anonymous" },
+      "target": { "type": "string", "example": "01579-9912345" },
+      "sourceAlias": { "type": "string", "example": "Dennis Ritchie" },
+      "targetAlias": { "type": "string", "example": "Ken Thompson" },
+      "type": { "type": "string", "enum": ["CALL", "VOICEMAIL", "SMS", "FAX"] },
+      "created": { "type": "string", "example": "2016-02-10T14:19:39Z" },
+      "lastModified": { "type": "string", "example": "2016-02-10T14:19:39Z" },
+      "direction": {
+        "type": "string",
+        "enum": ["INCOMING", "OUTGOING", "MISSED_INCOMING", "MISSED_OUTGOING"]
+      },
+      "incoming": { "type": "boolean", "default": false },
+      "status": {
+        "type": "string",
+        "enum": ["NOPICKUP", "BUSY", "PICKUP", "FORWARD"]
+      },
+      "connectionIds": { "type": "array", "items": { "type": "string" } },
+      "read": { "type": "boolean", "example": true, "default": false },
+      "archived": { "type": "boolean", "default": false },
+      "note": { "type": "string" },
+      "endpoints": {
+        "type": "array",
+        "items": { "$ref": "#/definitions/RoutedEndpointResponse" }
+      },
+      "starred": { "type": "boolean", "default": false },
+      "labels": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": { "type": "string" }
+      }
+    }
+  },
+   "RoutedEndpointResponse": {
+    "type": "object",
+    "properties": {
+      "type": { "type": "string", "enum": ["FORWARDED", "ROUTED", "PICKUP"] },
+      "endpoint": { "$ref": "#/definitions/EndpointResponse" }
+    }
+  },
+  "EndpointResponse": {
+    "type": "object",
+    "properties": {
+      "extension": { "type": "string", "example": "e0" },
+      "type": {
+        "type": "string",
+        "enum": [
+          "SMS",
+          "REGISTER",
+          "EXTERNAL",
+          "FAX",
+          "MOBILE",
+          "GROUP",
+          "VOICEMAIL",
+          "PHONELINE",
+          "USER"
+        ]
+      }
+    }
+  },
+  "GroupFaxlineResponse": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "example": "f0" },
+        "alias": { "type": "string", "example": "Alexander Bain's fax" },
+        "tagline": { "type": "string", "example": "Example Ltd." },
+        "canSend": { "type": "boolean", "default": false },
+        "canReceive": { "type": "boolean", "default": false },
+        "groupId": { "type": "string", "example": "f0" }
+      }
+    },
+    "GroupFaxlinesResponse": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/GroupFaxlineResponse" }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "oauth2": {
+      "authorizationUrl": "https://login.sipgate.com/auth/realms/third-party/protocol/openid-connect/auth",
+      "flow": "implicit",
+      "scopes": {
+        "account:read": "Access account details",
+        "account:write": "Manage account details",
+        "addresses:read": "Access addresses",
+        "addresses:write": "Manage addresses",
+        "authorization:oauth2:clients:read": "Access OAuth 2.0 clients",
+        "authorization:oauth2:clients:write": "Manage OAuth 2.0 clients",
+        "authorization:oauth:clients:read": "Access OAuth clients",
+        "authorization:oauth:clients:write": "Manage OAuth clients",
+        "autorecording:greeting:read": "Access autorecording greeting",
+        "autorecording:greeting:write": "Manage autorecording greeting",
+        "balance:read": "Access account balance",
+        "blacklist:read": "Access blacklist",
+        "blacklist:write": "Manage blacklist",
+        "callrestrictions:read": "Access call restrictions",
+        "callrestrictions:write": "Manage call restrictions",
+        "contacts:read": "Access contacts",
+        "contacts:write": "Manage contacts",
+        "contracts:crm:read": "Access your CRM contracts",
+        "contracts:read": "Access contracts",
+        "contracts:write": "Manage contracts",
+        "devices:callerid:read": "Access caller ID",
+        "devices:callerid:write": "Manage caller ID",
+        "devices:contingents:read": "Access mobile device contingents",
+        "devices:forwardings:read": "Access forwardings of a device",
+        "devices:forwardings:write": "Manage forwardings of a device",
+        "devices:localprefix:read": "Access automatic local area code",
+        "devices:localprefix:write": "Manage automatic local area code",
+        "devices:read": "Access device settings",
+        "devices:sim:read": "Access SIM settings",
+        "devices:sim:write": "Manage SIM settings",
+        "devices:sims:orders:write": "Order SIM cards",
+        "devices:singlerowdisplay:read": "Access hide own number settings",
+        "devices:singlerowdisplay:write": "Manage hide own number settings",
+        "devices:tariffannouncement:read": "Access rate announcement settings",
+        "devices:tariffannouncement:write": "Manage rate announcement settings",
+        "devices:write": "Manage device settings",
+        "events:read": "Access call events",
+        "events:write": "Manage call events",
+        "faxlines:numbers:read": "Access fax device settings (numbers)",
+        "faxlines:read": "Access fax device settings",
+        "faxlines:write": "Manage fax device settings",
+        "groups:devices:write": "Manage group device settings",
+        "groups:faxlines:read": "Access group fax device settings",
+        "groups:forwardings:read": "Access forwardings of a group",
+        "groups:forwardings:write": "Manage forwardings of a group",
+        "groups:numbers:read": "Access group numbers",
+        "groups:read": "Access groups",
+        "groups:users:read": "Access group members",
+        "groups:voicemails:read": "Access group voicemail settings",
+        "groups:write": "Manage groups",
+        "history:read": "Access call history",
+        "history:write": "Manage call history",
+        "labels:read": "Access user labels",
+        "labels:write": "Manage user labels",
+        "log:webhooks:read": "Read your webhooks log data",
+        "notifications:read": "Access notifications",
+        "notifications:write": "Manage notifications",
+        "numbers:read": "Access phone numbers",
+        "numbers:write": "Manage phone numbers",
+        "openid": "User information",
+        "payment:methods:read": "Access payment methods",
+        "payment:methods:write": "Manage payment methods",
+        "phonelines:blockanonymous:read": "Access anonymous call settings",
+        "phonelines:blockanonymous:write": "Manage anonymous call settings",
+        "phonelines:busyonbusy:read": "Access busy on busy settings",
+        "phonelines:busyonbusy:write": "Manage busy on busy settings",
+        "phonelines:devices:read": "Access connection devices",
+        "phonelines:devices:write": "Manage connection devices",
+        "phonelines:forwardings:read": "Access call forwarding settings",
+        "phonelines:forwardings:write": "Manage call forwarding settings",
+        "phonelines:numbers:read": "Access connection numbers",
+        "phonelines:parallelforwardings:read": "Access parallel forwarding settings",
+        "phonelines:parallelforwardings:write": "Manage parallel forwarding settings",
+        "phonelines:read": "Access connections",
+        "phonelines:sipgateio:log:read": "Access webhook debug log",
+        "phonelines:sipgateio:read": "Access webhooks",
+        "phonelines:sipgateio:write": "Manage webhooks",
+        "phonelines:voicemails:greetings:read": "Access connection voicemail announcement settings",
+        "phonelines:voicemails:greetings:write": "Manage connection voicemail announcement settings",
+        "phonelines:voicemails:read": "Access connection voicemail settings",
+        "phonelines:voicemails:write": "Manage connection voicemail settings",
+        "phonelines:write": "Manage connections",
+        "phones:read": "Access provisioned phones",
+        "phones:write": "Manage provisioned phones",
+        "portings:read": "Access number ports",
+        "portings:write": "Manage number ports",
+        "products:read": "Access products",
+        "push_device:register": "Manage push notifications",
+        "rtcm:read": "Access active calls",
+        "rtcm:write": "Manage active calls",
+        "sessions:calls:write": "Initiate calls",
+        "sessions:fax:write": "Send faxes",
+        "sessions:sms:write": "Send SMS",
+        "sessions:write": "Initiate calls, send faxes, send SMS",
+        "settings:read": "Access global account settings",
+        "settings:sipgateio:read": "Access global webhooks",
+        "settings:sipgateio:write": "Manage global webhooks",
+        "settings:write": "Manage global account settings",
+        "sms:callerid:read": "Access SMS caller ID",
+        "sms:callerid:write": "Manage SMS caller ID",
+        "sms:read": "Access SMS device settings",
+        "sms:write": "Manage SMS device settings",
+        "tacs:read": "List TACs and their texts",
+        "trunk:read": "Access Trunking settings",
+        "users:busyonbusy:write": "Manage busy on busy settings",
+        "users:defaultdevice:write": "Manage default device settings",
+        "users:read": "Access users",
+        "users:role:write": "Manage user roles",
+        "users:write": "Manage users",
+        "voicemails:read": "Access Voicemails"
+      },
+      "tokenUrl": "https://api.sipgate.com/login/third-party/protocol/openid-connect/token",
+      "type": "oauth2"
+    }
+  }
+}

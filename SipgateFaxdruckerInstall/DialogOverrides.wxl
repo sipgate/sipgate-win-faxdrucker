@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="de-DE" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+	<String Id="NewVersionAlreadyInstalled">Eine neuere Version von [ProductName] ist bereits installiert.</String>
+	<String Id="WelcomeDlgDescription" >[ProductName] [ProductVersion] wird installiert. Klicken Sie auf Weiter, um fortzufahren, oder auf Abbrechen, um zu beenden.</String>
+	<String Id="WelcomeUpdateDlgDescriptionUpdate" Overridable="yes">[ProductName] wird auf [ProductVersion] aktualisiert. Klicken Sie auf Weiter, um fortzufahren, oder auf Abbrechen, um den Vorgang zu beenden</String>
+	<String Id="WelcomeDlgTitle" Overridable="yes">{\WixUI_Font_Bigger}[ProductName] [ProductVersion] Installation</String>
+
+	<!-- Some of these aren't currently used, but might as well make the chagnes while I'm here -->
+	<String Id="VerifyReadyDlgInstallText" Overridable="yes">Klicken Sie auf Installieren, um die Installation zu starten. Klicken Sie auf Zurück, um Ihre Installationseinstellungen zu überprüfen oder zu ändern. Klicken Sie zum Beenden auf Abbrechen.</String>
+	<String Id="VerifyReadyDlgChangeText" Overridable="yes">Klicken Sie auf Ändern, um die Installation zu starten. Klicken Sie auf Zurück, um Ihre Installationseinstellungen zu überprüfen oder zu ändern. Klicken Sie zum Beenden auf Abbrechen.</String>
+	<String Id="VerifyReadyDlgRepairText" Overridable="yes">Klicken Sie auf Reparieren, um die Installation von [ProductName] zu reparieren. Klicken Sie auf Zurück, um Ihre Installationseinstellungen zu überprüfen oder zu ändern. Klicken Sie zum Beenden auf Abbrechen.</String>
+	<String Id="VerifyReadyDlgRemoveText" Overridable="yes">Klicken Sie auf Entfernen, um [ProductName] zu entfernen. Klicken Sie auf Zurück, um Ihre Installationseinstellungen zu überprüfen oder zu ändern. Klicken Sie zum Beenden auf Abbrechen.</String>
+	<String Id="VerifyReadyDlgUpdateText" Overridable="yes">Klicken Sie auf Update, um [ProductName] zu aktualisieren. Klicken Sie auf Zurück, um Ihre Installationseinstellungen zu überprüfen oder zu ändern. Klicken Sie zum Beenden auf Abbrechen.</String>
+
+	<String Id="UserExitTitle" >{\WixUI_Font_Bigger}[ProductName] Installation wurde unterbrochen</String>
+	<String Id="UserExitDescription1" >[ProductName] Installation wurde unterbrochen. Ihr System wurde nicht verändert.</String>
+	<String Id="UserExitDescription2" >Klicken Sie auf die Schaltfläche "Beenden", um das Installationsprogramm zu beenden.</String>
+
+	<String Id="ProgressDlgTextInstalling" Overridable="yes">Bitte warten Sie, während [ProductName] installiert wird.</String>
+	<String Id="ProgressDlgTextChanging" Overridable="yes">Bitte warten Sie, während [ProductName] geändert wird.</String>
+	<String Id="ProgressDlgTextRepairing" Overridable="yes">Bitte warten Sie, während [ProductName] repariert wird.</String>
+	<String Id="ProgressDlgTextRemoving" Overridable="yes">Bitte warten Sie, während [ProductName] entfernt wird.</String>
+	<String Id="ProgressDlgTextUpdating" Overridable="yes">Bitte warten Sie, während [ProductName] aktualisiert wird.</String>
+
+	<String Id="ExitDialogDescription" Overridable="yes">Klicken Sie auf die Schaltfläche Fertig stellen, um das Installationsprogramm zu beenden.</String>
+	<String Id="ExitDialogTitle" Overridable="yes">{\WixUI_Font_Bigger}[ProductName] [ProductVersion] Installation abgeschlossen.</String>
+</WixLocalization>

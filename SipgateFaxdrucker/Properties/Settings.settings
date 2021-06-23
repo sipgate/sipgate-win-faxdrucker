@@ -1,0 +1,30 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SipgateFaxdrucker.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ApiBaseUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://api.sipgate.com</Value>
+    </Setting>
+    <Setting Name="LoginBaseUrl" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">https://login.sipgate.com</Value>
+    </Setting>
+    <Setting Name="ClientId" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">sipgate_faxdrucker_win</Value>
+    </Setting>
+    <Setting Name="MixpanelClient" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">faxdrucker</Value>
+    </Setting>
+    <Setting Name="LogFileStorageInDays" Type="System.String" Scope="User">
+      <Value Profile="(Default)">7</Value>
+    </Setting>
+    <Setting Name="UpdateCheckUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://sipgate-faxdrucker.s3.eu-central-1.amazonaws.com/version.xml</Value>
+    </Setting>
+    <Setting Name="MixpanelToken" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ba6490d191f97adf977a1293a1084b53</Value>
+    </Setting>
+    <Setting Name="MixpanelTokenDebug" Type="System.String" Scope="User">
+      <Value Profile="(Default)">5e2eedfb2db9a53766edab1380f6017e</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
