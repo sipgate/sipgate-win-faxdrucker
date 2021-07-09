@@ -96,7 +96,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\faxdrucker.ico</ApplicationIcon>
@@ -227,14 +227,19 @@
     <Compile Include="..\Common\SipgateFaxdruckerSharedAssemblyInfo.cs">
       <Link>GhostScript\SipgateFaxdruckerSharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Authentication.cs" />
-    <Compile Include="Contact.cs" />
+    <Compile Include="ViewModel\FaxStatusDetail.cs" />
+    <Compile Include="ViewModel\SelectableFaxline.cs" />
+    <Compile Include="Utils\Auth\Authentication.cs" />
+    <Compile Include="Utils\Auth\AuthorizationException.cs" />
+    <Compile Include="Model\Contact.cs" />
     <Compile Include="Converter\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converter\BooleanToInvertedVisibilityConverter.cs" />
-    <Compile Include="CustomCombobox.cs" />
-    <Compile Include="MainViewModel.cs" />
-    <Compile Include="Mixpanel.cs" />
-    <Compile Include="SimpleDelegateCommand.cs" />
+    <Compile Include="View\Controls\CustomCombobox.cs" />
+    <Compile Include="Utils\Auth\InvalidRefreshTokenException.cs" />
+    <Compile Include="ViewModel\MainViewModel.cs" />
+    <Compile Include="Utils\Mixpanel.cs" />
+    <Compile Include="Utils\Auth\NoInternetConnectionException.cs" />
+    <Compile Include="ViewModel\SimpleDelegateCommand.cs" />
     <Compile Include="SipgateAPI\Models\AddressResponse.cs" />
     <Compile Include="SipgateAPI\Models\BalanceResponse.cs" />
     <Compile Include="SipgateAPI\Models\ContactResponse.cs" />
@@ -242,9 +247,9 @@
     <Compile Include="SipgateAPI\Models\EMailResponse.cs" />
     <Compile Include="SipgateAPI\Models\InternalContactResponse.cs" />
     <Compile Include="SipgateAPI\Models\NumberResponse.cs" />
-    <Compile Include="Utils.cs" />
-    <Compile Include="CredentialManager.cs" />
-    <Compile Include="ErrorDialog.cs" />
+    <Compile Include="Utils\FaxDruckerUtils.cs" />
+    <Compile Include="Model\CredentialManager.cs" />
+    <Compile Include="View\Controls\ErrorDialog.cs" />
     <Compile Include="GhostScript\GhostScript32.cs" />
     <Compile Include="GhostScript\GhostScript64.cs" />
     <Compile Include="GhostScript\GhostScriptRunner.cs">
@@ -252,8 +257,8 @@
     </Compile>
     <Compile Include="GhostScript\NativeMethods32.cs" />
     <Compile Include="GhostScript\NativeMethods64.cs" />
-    <Compile Include="FaxStatus.cs" />
-    <Compile Include="FaxManager.cs" />
+    <Compile Include="ViewModel\FaxStatus.cs" />
+    <Compile Include="Utils\Fax\FaxManager.cs" />
     <Compile Include="SipgateAPI\Models\EndpointResponse.cs" />
     <Compile Include="SipgateAPI\Models\GroupFaxlineResponse.cs" />
     <Compile Include="SipgateAPI\Models\GroupFaxlinesResponse.cs" />
@@ -267,8 +272,8 @@
     <Compile Include="SipgateAPI\Models\UserinfoResponse.cs" />
     <Compile Include="SipgateAPI\SipgateAPI.cs" />
     <Compile Include="SipgateAPI\SipgateAPIExtensions.cs" />
-    <Compile Include="SipgateCredentials.cs" />
-    <Compile Include="SipgateForm.xaml.cs">
+    <Compile Include="Model\SipgateCredentials.cs" />
+    <Compile Include="View\SipgateForm.xaml.cs">
       <DependentUpon>SipgateForm.xaml</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -291,12 +296,12 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\favicon.ico" />
-    <None Include="App.config">
+    <None Include="Properties\App.config">
       <SubType>Designer</SubType>
     </None>
-    <None Include="app.manifest" />
-    <None Include="packages.config" />
-    <None Include="packages.lock.json" />
+    <None Include="Properties\app.manifest" />
+    <None Include="Properties\packages.config" />
+    <None Include="Properties\packages.lock.json" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -305,7 +310,7 @@
     <None Include="Resources\swagger_fax.json" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="SipgateForm.xaml">
+    <Page Include="View\SipgateForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -323,9 +328,9 @@
     <Content Include="GhostScript\gsdll32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="RedirectionPageFailure.html" />
+    <EmbeddedResource Include="Resources\RedirectionPageFailure.html" />
     <Content Include="Resources\favicon.ico" />
-    <EmbeddedResource Include="RedirectionPage.html" />
+    <EmbeddedResource Include="Resources\RedirectionPage.html" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
@@ -339,11 +344,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\" />
-    <Folder Include="ViewModel\" />
-    <Folder Include="View\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

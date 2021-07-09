@@ -11,7 +11,7 @@
         Title="sipgate Faxdrucker" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Padding="0" Topmost="True" WindowStartupLocation="CenterScreen" HorizontalAlignment="Center" VerticalAlignment="Center"
-        KeyDown="Window_KeyDown" Loaded="Window_Loaded" Icon="Resources/faxdrucker.ico" MinWidth="300" MinHeight="373" TabIndex="2147483642" MaxWidth="375">
+        KeyDown="Window_KeyDown" Loaded="Window_Loaded" Icon="/Resources/faxdrucker.ico" MinWidth="300" MinHeight="373" TabIndex="2147483642" MaxWidth="375">
     <Window.TaskbarItemInfo>
         <TaskbarItemInfo/>
         <!--todo show progress from fax sending-->
@@ -54,12 +54,12 @@
     <Grid x:Name="MainGrid" Margin="24">
         <StackPanel VerticalAlignment="Center">
             <StackPanel x:Name="LoginView" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,10" IsVisibleChanged="LoginView_IsVisibleChanged">
-                <svgc:SvgViewbox Margin="0,0,0,30" Source="Resources/icon-lock.svg" Height="64" HorizontalAlignment="Center"/>
+                <svgc:SvgViewbox Margin="0,0,0,30" Source="/Resources/icon-lock.svg" Height="64" HorizontalAlignment="Center"/>
                 <TextBlock Margin="0,0,0,20" Text="Willkommen im sipgate Faxdrucker" FontSize="16" Foreground="#FF3C3C3C" HorizontalAlignment="Center"/>
                 <Button Background="{x:Null}" Padding="20,10,20,10" Margin="10,0,10,0"  Click="LoginButton_Click">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock  FontSize="16" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="#FF3C3C3C">Im Browser anmelden</TextBlock>
-                        <svgc:SvgViewbox Margin="4,0,0,0" Source="Resources/icon-external-link.svg" Height="16" HorizontalAlignment="Right"/>
+                        <svgc:SvgViewbox Margin="4,0,0,0" Source="/Resources/icon-external-link.svg" Height="16" HorizontalAlignment="Right"/>
                     </StackPanel>
                 </Button>
                 <TextBlock x:Name="ErrorText" MaxWidth="240" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,8,0,0" Visibility="Hidden" TextWrapping="Wrap">
@@ -72,7 +72,7 @@
                 </TextBlock>
             </StackPanel>
             <StackPanel x:Name="FaxView" MinWidth="200" VerticalAlignment="Center" HorizontalAlignment="Center" IsVisibleChanged="FaxView_IsVisibleChanged" Height="380" Visibility="Collapsed">
-                <svgc:SvgViewbox Margin="0,0,0,30" Source="Resources/fax-icon.svg" Height="64" HorizontalAlignment="Center"/>
+                <svgc:SvgViewbox Margin="0,0,0,30" Source="/Resources/fax-icon.svg" Height="64" HorizontalAlignment="Center"/>
 
                 <TextBlock Foreground="#FF1086FC" FontSize="12" Margin="0,0,0,8" >Faxanschluss</TextBlock>
                 <ComboBox x:Name="FaxlinesDropdown" ItemsSource="{Binding Faxlines}" HorizontalAlignment="Stretch" SelectedItem="0" SelectionChanged="ComboBox_Selected"
@@ -162,7 +162,7 @@
             </StackPanel>
 
             <StackPanel x:Name="StatusView" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,10" Visibility="Collapsed">
-                <svgc:SvgViewbox Margin="0,0,0,30" Source="Resources/fax-icon.svg" Height="64" HorizontalAlignment="Center"/>
+                <svgc:SvgViewbox Margin="0,0,0,30" Source="/Resources/fax-icon.svg" Height="64" HorizontalAlignment="Center"/>
 
                 <TextBlock Margin="0,0,0,20" FontSize="16" x:Name="TextSendStatus" Width="250" TextWrapping="Wrap" TextAlignment="Center" Foreground="#FF3C3C3C"></TextBlock>
 

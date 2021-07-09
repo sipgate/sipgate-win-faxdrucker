@@ -32,7 +32,7 @@ namespace SipgateFaxdrucker
         }
     }
 
-    public static class Utils
+    public static class FaxDruckerUtils
     {
 
         public static string[] numberValidationMessages = { "Nummer OK", "Nummer zu kurz", "Nicht unterstütze Vorwahl", "Keine gültige Faxnummer" };

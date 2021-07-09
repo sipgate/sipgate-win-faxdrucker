@@ -10,13 +10,13 @@ namespace SipgateFaxdrucker
         {
             AppDomain.CurrentDomain.UnhandledException += Application_UnhandledException;
 
-            Utils.InitializeTraceSource();
+            FaxDruckerUtils.InitializeTraceSource();
 
 #if DEBUG
-            Utils.faxdruckerTraceSource.Switch.Level = SourceLevels.All;
+            FaxDruckerUtils.faxdruckerTraceSource.Switch.Level = SourceLevels.All;
 #endif
 
-            Utils.LogInformation("Started Programm");
+            FaxDruckerUtils.LogInformation("Started Programm");
 
             using (SipgateForm sipgateForm = new SipgateForm())
             {
@@ -24,8 +24,8 @@ namespace SipgateFaxdrucker
                 sipgateForm.Close();
             }
 
-            Utils.LogInformation("Exited Programm");
-            Utils.faxdruckerTraceSource.Close();
+            FaxDruckerUtils.LogInformation("Exited Programm");
+            FaxDruckerUtils.faxdruckerTraceSource.Close();
         }
 
 
@@ -38,10 +38,10 @@ namespace SipgateFaxdrucker
         static void Application_UnhandledException(object sender, UnhandledExceptionEventArgs uex)
         {
             Exception exception = uex.ExceptionObject as Exception;
-            Utils.LogCritical($"Unhandled exception: {uex.ExceptionObject} {exception?.GetType()}");
-            Utils.faxdruckerTraceSource.Close();
+            FaxDruckerUtils.LogCritical($"Unhandled exception: {uex.ExceptionObject} {exception?.GetType()}");
+            FaxDruckerUtils.faxdruckerTraceSource.Close();
 
-            ErrorDialog errorDialog = new ErrorDialog(Utils.faxdruckerTraceSource);
+            ErrorDialog errorDialog = new ErrorDialog(FaxDruckerUtils.faxdruckerTraceSource);
             errorDialog.HandleUnhandledException(uex);
 
         }

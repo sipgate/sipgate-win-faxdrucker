@@ -14,7 +14,7 @@ namespace SipgateFaxdrucker
 
         public CredentialManager()
         {
-            Utils.LogInformation("Created CredentialManager");
+            FaxDruckerUtils.LogInformation("Created CredentialManager");
         }
 
         private string GetConfigPath()
@@ -22,7 +22,7 @@ namespace SipgateFaxdrucker
             try
             {
                 var localApplicationDataDirectory = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                string[] configPaths = { localApplicationDataDirectory, $@"{Utils.appName}" };
+                string[] configPaths = { localApplicationDataDirectory, $@"{FaxDruckerUtils.appName}" };
                 string configPath = Path.Combine(configPaths);
 
                 if (!Directory.Exists(configPath))
@@ -35,7 +35,7 @@ namespace SipgateFaxdrucker
             }
             catch (Exception e)
             {
-                Utils.LogCritical($"Error creating config path for credentials ({e.Message})");
+                FaxDruckerUtils.LogCritical($"Error creating config path for credentials ({e.Message})");
                 return null;
             }
         }
@@ -89,7 +89,7 @@ namespace SipgateFaxdrucker
             }
             catch (Exception e)
             {
-                Utils.LogCritical($"error loading credentials: {e.Message}");
+                FaxDruckerUtils.LogCritical($"error loading credentials: {e.Message}");
                 return null;
             }
         }
@@ -121,7 +121,7 @@ namespace SipgateFaxdrucker
             }
             catch (Exception e)
             {
-                Utils.LogCritical($"error saving credentials: {e.Message}");
+                FaxDruckerUtils.LogCritical($"error saving credentials: {e.Message}");
             }
         }
 

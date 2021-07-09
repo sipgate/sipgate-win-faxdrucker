@@ -18,8 +18,8 @@ namespace SipgateFaxdrucker.GhostScript
         {
             ErrorDialog errorDialog = new ErrorDialog(LogEventSource);
 
-            var sizeInfo = Utils.GetFileSize(standardInputFilename);
-            Utils.LogCritical("standardinputfilename before : " + sizeInfo);
+            var sizeInfo = FaxDruckerUtils.GetFileSize(standardInputFilename);
+            FaxDruckerUtils.LogCritical("standardinputfilename before : " + sizeInfo);
             try
             {
                 using (BinaryReader standardInputReader = new BinaryReader(Console.OpenStandardInput()))

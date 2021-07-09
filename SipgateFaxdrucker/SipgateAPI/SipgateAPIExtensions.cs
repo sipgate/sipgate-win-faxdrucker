@@ -54,7 +54,7 @@ namespace SipgateFaxdrucker.SipgateAPI
             }
             catch (Exception exception)
             {
-                Utils.LogCritical("Failed to send fax: " + exception.Message);
+                FaxDruckerUtils.LogCritical("Failed to send fax: " + exception.Message);
                 return new SendFaxSessionResponse(null, System.Net.HttpStatusCode.InternalServerError);
             }
 

@@ -12,9 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace SipgateFaxdrucker
+namespace SipgateFaxdrucker.Utils.Auth
 {
-    public class Authentication
+    public partial class Authentication
     {
         private readonly string _clientId = Settings.Default.ClientId;
 #if DEBUG
@@ -79,10 +79,10 @@ namespace SipgateFaxdrucker
 
             var assembly = Assembly.GetExecutingAssembly();
 
-            var resourceName = "SipgateFaxdrucker.RedirectionPage.html";
+            var resourceName = "SipgateFaxdrucker.Resources.RedirectionPage.html";
             if (!success)
             {
-                resourceName = "SipgateFaxdrucker.RedirectionPageFailure.html";
+                resourceName = "SipgateFaxdrucker.Resources.RedirectionPageFailure.html";
             }
 
 
@@ -93,7 +93,7 @@ namespace SipgateFaxdrucker
             }
 
             response.OutputStream.Close();
-            Utils.LogInformation("Sent response page to browser.");
+            FaxDruckerUtils.LogInformation("Sent response page to browser.");
         }
 
 
@@ -174,13 +174,13 @@ namespace SipgateFaxdrucker
 
                 if (refreshToken == "")
                 {
-                    Utils.LogError($"Missing refresh token: {refreshToken}");
+                    FaxDruckerUtils.LogError($"Missing refresh token: {refreshToken}");
                     return false;
                 }
 
                 if (accessToken == "")
                 {
-                    Utils.LogError($"Missing access token: {accessToken}");
+                    FaxDruckerUtils.LogError($"Missing access token: {accessToken}");
                     return false;
                 }
 
@@ -213,14 +213,14 @@ namespace SipgateFaxdrucker
                     new StreamReader(responseStream))
                 {
                     string responseText = await reader.ReadToEndAsync();
-                    Utils.LogInformation("responseText: " + responseText);
+                    FaxDruckerUtils.LogInformation("responseText: " + responseText);
                     return true;
 
                 }
             }
             catch (Exception e)
             {
-                Utils.LogCritical($"exception on logout: {e.Message}-{e.GetType()}");
+                FaxDruckerUtils.LogCritical($"exception on logout: {e.Message}-{e.GetType()}");
                 return false;
             }
 
@@ -261,12 +261,12 @@ namespace SipgateFaxdrucker
                     }
                 }
 
-                Utils.LogCritical($"could not refresh token:  {ex.Message} ({ex.Status})");
+                FaxDruckerUtils.LogCritical($"could not refresh token:  {ex.Message} ({ex.Status})");
                 return null;
             }
             catch (Exception e)
             {
-                Utils.LogCritical($"Could not perform code exchange: {e.StackTrace} {e.GetType()}");
+                FaxDruckerUtils.LogCritical($"Could not perform code exchange: {e.StackTrace} {e.GetType()}");
                 return null;
             }
 
@@ -298,7 +298,7 @@ namespace SipgateFaxdrucker
             }
             catch (Exception e)
             {
-                Utils.LogCritical("Could not perform code exchange:" + e.Message);
+                FaxDruckerUtils.LogCritical("Could not perform code exchange:" + e.Message);
                 return null;
             }
 
@@ -361,12 +361,12 @@ namespace SipgateFaxdrucker
                     }
                 }
 
-                Utils.LogCritical($"could not refresh token: {wex.Status}");
+                FaxDruckerUtils.LogCritical($"could not refresh token: {wex.Status}");
                 return null;
             }
             catch (Exception e)
             {
-                Utils.LogCritical($"could not refresh token: {e.Message} ({e.GetType()})");
+                FaxDruckerUtils.LogCritical($"could not refresh token: {e.Message} ({e.GetType()})");
                 return null;
             }
         }
@@ -396,7 +396,7 @@ namespace SipgateFaxdrucker
             }
             catch (WebException wex)
             {
-                Utils.LogCritical($"get request stream failed:{wex}");
+                FaxDruckerUtils.LogCritical($"get request stream failed:{wex}");
                 if (stream != null) stream.Close();
                 throw;
             }
@@ -421,27 +421,5 @@ namespace SipgateFaxdrucker
                 return new SipgateCredentials(tokenEndpointDecoded["access_token"], tokenEndpointDecoded["refresh_token"]);
             }
         }
-
-        public class InvalidRefreshTokenException : Exception
-        {
-            public InvalidRefreshTokenException(string message)
-                : base(message)
-            {
-            }
-        }
-
-        public class AuthorizationException : Exception
-        {
-            public AuthorizationException(string message)
-                : base(message)
-            {
-            }
-        }
-
-        public class NoInternetConnectionException : WebException
-        {
-        }
     }
-
-
 }

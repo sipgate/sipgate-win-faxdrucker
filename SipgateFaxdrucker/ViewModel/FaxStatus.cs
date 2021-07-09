@@ -56,7 +56,7 @@ namespace SipgateFaxdrucker
                 catch (Exception ex)
                 {
                     form.TextSendStatus.Text = "Abfrage des Status fehlgeschlagen";
-                    Utils.LogCritical($"CheckStatus failed: {ex.Message}");
+                    FaxDruckerUtils.LogCritical($"CheckStatus failed: {ex.Message}");
                     originalTimer.Stop();
                     return;
                 }
@@ -79,20 +79,6 @@ namespace SipgateFaxdrucker
                 }
             };
             timer.Start();
-        }
-    }
-
-    public class FaxStatusDetail
-    {
-        public string Translation { get; }
-        public SolidColorBrush Color { get; }
-        public bool IsFinal { get; }
-
-        public FaxStatusDetail(string translation, SolidColorBrush color, bool isFinal)
-        {
-            this.Translation = translation;
-            this.Color = color;
-            this.IsFinal = isFinal;
         }
     }
 }

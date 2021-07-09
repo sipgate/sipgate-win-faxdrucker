@@ -9,8 +9,7 @@ namespace SipgateFaxdrucker
     {
         public MainViewModel()
         {
-            var contacts = GetInitialContacts();
-            Contacts = (CollectionView)new CollectionViewSource { Source = contacts }.View;
+            Contacts = (CollectionView)new CollectionViewSource { Source = new ObservableCollection<Contact>() }.View;
             Contacts.Filter = DropDownFilter;
         }
 
@@ -91,21 +90,6 @@ namespace SipgateFaxdrucker
         }
 
         #endregion ComboBox
-
-        private static ObservableCollection<Contact> GetInitialContacts()
-        {
-            var contacts = new ObservableCollection<Contact>
-        {
-            new Contact ( "Name1","01778569286","A" ),
-            new Contact ( "Name2","01778569284","C" ),
-            new Contact ( "Name3","323423","B" ),
-            new Contact ( "Name4","46456","D" ),
-            new Contact ( "Name5","5432","E" ),
-        };
-
-
-            return contacts;
-        }
 
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {

@@ -17,27 +17,27 @@ namespace SipgateFaxdrucker
         {
             try
             {
-                Utils.LogInformation("API: Get user info...", 1);
+                FaxDruckerUtils.LogInformation("API: Get user info...", 1);
                 UserinfoResponse userinfo = await api.UserinfoAsync();
                 if (userinfo != null)
                 {
-                    Utils.LogInformation($"API: Got user info: {userinfo.Sub}");
+                    FaxDruckerUtils.LogInformation($"API: Got user info: {userinfo.Sub}");
                 }
                 else
                 {
-                    Utils.LogInformation("API: Error fetching user info: ");
+                    FaxDruckerUtils.LogInformation("API: Error fetching user info: ");
                     return null;
                 }
 
-                Utils.LogInformation("API: Get fax lines info...");
+                FaxDruckerUtils.LogInformation("API: Get fax lines info...");
                 FaxlinesResponse faxlines = await api.GetUserFaxlinesAsync(userinfo.Sub);
-                Utils.LogInformation($"API: Got fax lines: {faxlines.Items.Count}");
+                FaxDruckerUtils.LogInformation($"API: Got fax lines: {faxlines.Items.Count}");
 
                 return faxlines;
             }
             catch (Exception ex)
             {
-                Utils.LogCritical($"API: Error fetching user info: {ex.Message}");
+                FaxDruckerUtils.LogCritical($"API: Error fetching user info: {ex.Message}");
                 return null;
             }
         }
@@ -47,13 +47,13 @@ namespace SipgateFaxdrucker
             try
             {
 
-                Utils.LogInformation("API: Get user info...", 2);
+                FaxDruckerUtils.LogInformation("API: Get user info...", 2);
                 UserinfoResponse userinfo = await api.UserinfoAsync();
-                Utils.LogInformation($"API: Got user info: {userinfo.Sub}");
+                FaxDruckerUtils.LogInformation($"API: Got user info: {userinfo.Sub}");
 
-                Utils.LogInformation("API: Get group fax lines info...");
+                FaxDruckerUtils.LogInformation("API: Get group fax lines info...");
                 GroupFaxlinesResponse faxlines = await api.GetGroupFaxlinesForUserAsync(userinfo.Sub);
-                Utils.LogInformation($"API: Got group fax lines: {faxlines.Items.Count}");
+                FaxDruckerUtils.LogInformation($"API: Got group fax lines: {faxlines.Items.Count}");
 
                 return faxlines;
             }
@@ -64,43 +64,42 @@ namespace SipgateFaxdrucker
             }
         }
 
-
         public async Task<string> SendFileWithSipgateApi(string faxlineId, SipgateApi api)
         {
-            var base64Content = await Task.Run(() => Utils.ConvertPdfToBase64(FileName));
+            var base64Content = await Task.Run(() => FaxDruckerUtils.ConvertPdfToBase64(FileName));
 
-            Utils.LogInformation("Calling API...:");
+            FaxDruckerUtils.LogInformation("Calling API...:");
 
             try
             {
                 if (faxlineId == null)
                 {
-                    Utils.LogError("Fax could not be sent: No faxline found for logged in user");
+                    FaxDruckerUtils.LogError("Fax could not be sent: No faxline found for logged in user");
                     return null;
                 }
 
-                Utils.LogInformation("Filename: " + FileName);
+                FaxDruckerUtils.LogInformation("Filename: " + FileName);
                 var faxDocumentName = $"fax_{DateTime.Now:dd-MM-yyyy-HH-mm}.pdf";
-                Utils.LogInformation("faxName: " + faxDocumentName);
+                FaxDruckerUtils.LogInformation("faxName: " + faxDocumentName);
                 SendFaxRequest request = new SendFaxRequest
                 {
                     FaxlineId = faxlineId,
                     Filename = faxDocumentName,
-                    Recipient = Utils.E164TargetNumber(TargetNumber),
+                    Recipient = FaxDruckerUtils.E164TargetNumber(TargetNumber),
                     Base64Content = base64Content,
                 };
 
-                Utils.LogInformation("Response received.");
+                FaxDruckerUtils.LogInformation("Response received.");
 
                 SendFaxSessionResponse response = await api.SendFaxAsync(request);
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    Utils.LogInformation($"Success! SessionID: {response.SessionId}");
+                    FaxDruckerUtils.LogInformation($"Success! SessionID: {response.SessionId}");
                     return response.SessionId;
                 }
                 else
                 {
-                    Utils.LogError("Failed! Response code was: " + response.StatusCode);
+                    FaxDruckerUtils.LogError("Failed! Response code was: " + response.StatusCode);
                     return null;
                 }
             }
@@ -110,31 +109,9 @@ namespace SipgateFaxdrucker
             }
             catch (Exception ex)
             {
-                Utils.LogError($"Error while sending fax: {ex.GetType()} {ex.Message} {ex.StackTrace}");
+                FaxDruckerUtils.LogError($"Error while sending fax: {ex.GetType()} {ex.Message} {ex.StackTrace}");
                 return null;
             }
         }
-    }
-
-    public class SelectableFaxline
-    {
-        public SelectableFaxline(FaxlineResponse faxline)
-        {
-            Id = faxline.Id;
-            Alias = faxline.Alias;
-        }
-
-        public SelectableFaxline(GroupFaxlineResponse faxline)
-        {
-            Id = faxline.Id;
-            Alias = faxline.Alias;
-        }
-
-        public string Id { get; }
-
-        public string Alias { get; }
-
-
-
     }
 }

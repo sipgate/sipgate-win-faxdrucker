@@ -50,7 +50,5 @@ namespace SipgateFaxdrucker
                 _caretPosition = txt.CaretIndex;
             }
         }
-
-
     }
 }

@@ -40,8 +40,8 @@ namespace SipgateFaxdrucker
                     Testaccount = _userinfo.IsTestAccount,
                     Client = Settings.Default.MixpanelClient,
                     VersionNumber = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion,
-                    DistinctId = Utils.CreateSha256Hash($"{_userinfo.MasterSipId}{_userinfo.Sub}"),
-                    account_id = Utils.CreateSha256Hash(_userinfo.MasterSipId),
+                    DistinctId = FaxDruckerUtils.CreateSha256Hash($"{_userinfo.MasterSipId}{_userinfo.Sub}"),
+                    account_id = FaxDruckerUtils.CreateSha256Hash(_userinfo.MasterSipId),
                     OS = Environment.OSVersion.VersionString,
                     Is64Bit = Environment.Is64BitOperatingSystem.ToString(),
                 };
@@ -63,7 +63,7 @@ namespace SipgateFaxdrucker
             }
             catch (Exception e)
             {
-                Utils.LogCritical(e.Message);
+                FaxDruckerUtils.LogCritical(e.Message);
             }
         }
 
@@ -101,7 +101,7 @@ namespace SipgateFaxdrucker
 
         private void LogErrors(string error, Exception exception)
         {
-            Utils.LogCritical($"{error} - {exception.Message}");
+            FaxDruckerUtils.LogCritical($"{error} - {exception.Message}");
         }
     }
 }
