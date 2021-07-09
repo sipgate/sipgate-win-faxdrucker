@@ -18,13 +18,13 @@ namespace SipgateFaxdrucker
 
             Utils.LogInformation("Started Programm");
 
-            using (SipgateForm sipgateForm = new SipgateForm()) 
+            using (SipgateForm sipgateForm = new SipgateForm())
             {
                 sipgateForm.ShowDialog();
                 sipgateForm.Close();
             }
 
-            Utils.LogInformation("Exited Programm");      
+            Utils.LogInformation("Exited Programm");
             Utils.faxdruckerTraceSource.Close();
         }
 
@@ -45,5 +45,5 @@ namespace SipgateFaxdrucker
             errorDialog.HandleUnhandledException(uex);
 
         }
-    }        
+    }
 }

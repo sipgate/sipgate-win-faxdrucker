@@ -42,7 +42,7 @@ namespace SipgateFaxdrucker
             {
                 {
                     _logEventSource.TraceEvent(TraceEventType.Error,
-                        (int) TraceEventType.Error,
+                        (int)TraceEventType.Error,
                         ErrorDialogOutputFilenameInvalid + Environment.NewLine +
                         "Exception message: " + e.Message);
                     DisplayErrorMessage(ErrorDialogCaption,
@@ -59,7 +59,7 @@ namespace SipgateFaxdrucker
         {
             // Ghostscript error
             _logEventSource.TraceEvent(TraceEventType.Error,
-                (int) TraceEventType.Error,
+                (int)TraceEventType.Error,
                 String.Format(ErrorDialogTextGhostScriptConversion, ghostscriptEx.ErrorCode.ToString()) +
                 Environment.NewLine +
                 "Exception message: " + ghostscriptEx.Message);
@@ -72,7 +72,7 @@ namespace SipgateFaxdrucker
         {
             // filename is greater than 260 characters
             _logEventSource.TraceEvent(TraceEventType.Error,
-                (int) TraceEventType.Error,
+                (int)TraceEventType.Error,
                 ErrorDialogOutputFilenameTooLong + Environment.NewLine +
                 "Exception message: " + ex.Message);
             DisplayErrorMessage(ErrorDialogCaption,
@@ -82,7 +82,7 @@ namespace SipgateFaxdrucker
         public void Show(UnauthorizedAccessException ex)
         {
             _logEventSource.TraceEvent(TraceEventType.Error,
-                (int) TraceEventType.Error,
+                (int)TraceEventType.Error,
                 ErrorDialogOutputFileAccessDenied + Environment.NewLine +
                 "Exception message: " + ex.Message);
             // Can't write to target dir
@@ -95,7 +95,7 @@ namespace SipgateFaxdrucker
             // We couldn't delete, or create a file
             // because it was in use
             _logEventSource.TraceEvent(TraceEventType.Error,
-                (int) TraceEventType.Error,
+                (int)TraceEventType.Error,
                 ErrorDialogInstructionCouldNotWrite +
                 Environment.NewLine +
                 "Exception message: " + ioEx.Message);
@@ -111,7 +111,7 @@ namespace SipgateFaxdrucker
             // or couldn't create a file
             // because of permissions issues
             _logEventSource.TraceEvent(TraceEventType.Error,
-                (int) TraceEventType.Error,
+                (int)TraceEventType.Error,
                 ErrorDialogInstructionCouldNotWrite +
                 Environment.NewLine +
                 "Exception message: " + unauthorizedEx.Message);
@@ -124,16 +124,16 @@ namespace SipgateFaxdrucker
         public void HandleFileNotDeleted(string standardInputFilename)
         {
             _logEventSource.TraceEvent(TraceEventType.Warning,
-                (int) TraceEventType.Warning,
+                (int)TraceEventType.Warning,
                 String.Format(WarnFileNotDeleted, standardInputFilename));
         }
 
         public void HandleUnhandledException(UnhandledExceptionEventArgs e)
         {
             _logEventSource.TraceEvent(TraceEventType.Critical,
-                (int) TraceEventType.Critical,
-                ((Exception) e.ExceptionObject).Message + Environment.NewLine +
-                ((Exception) e.ExceptionObject).StackTrace);
+                (int)TraceEventType.Critical,
+                ((Exception)e.ExceptionObject).Message + Environment.NewLine +
+                ((Exception)e.ExceptionObject).StackTrace);
             DisplayErrorMessage(ErrorDialogCaption,
                 ErrorDialogInstructionUnexpectedError);
         }

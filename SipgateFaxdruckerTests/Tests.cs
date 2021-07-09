@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Xunit;
-
-using SipgateFaxdruckerCore;
+﻿using SipgateFaxdruckerInstallCustomAction;
+using System;
 
 namespace SipgateFaxdruckerTests
 {
     public class Tests
     {
-        #region SipgateFaxdruckerCore Tests
         //[Test]
         public void Test_DeleteSipgateFaxdruckerPort()
         {
@@ -62,8 +54,5 @@ namespace SipgateFaxdruckerTests
             var sgFaxInstaller = new SipgateFaxdruckerInstaller();
             sgFaxInstaller.RemoveSipgateFaxdruckerPortMonitor();
         }
-
-        #endregion
-
     }
 }

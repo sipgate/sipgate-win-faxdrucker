@@ -1,10 +1,10 @@
 using Microsoft.Rest;
-using System;
-using System.Windows;
-using System.Threading.Tasks;
 using PhoneNumbers;
 using SipgateFaxdrucker.SipgateAPI;
 using SipgateFaxdrucker.SipgateAPI.Models;
+using System;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace SipgateFaxdrucker
 {

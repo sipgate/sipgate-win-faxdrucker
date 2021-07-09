@@ -59,7 +59,7 @@ namespace SipgateFaxdrucker
 
         public bool IsValidFaxNumber()
         {
-            return  !IsNoContactFallback && Utils.GetNumberValidationResult(Number).wasSuccessful;
+            return !IsNoContactFallback && Utils.GetNumberValidationResult(Number).wasSuccessful;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

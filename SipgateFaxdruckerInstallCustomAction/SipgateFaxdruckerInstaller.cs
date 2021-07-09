@@ -1,31 +1,30 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
 using System.Security;
+using System.Text;
 
-using Microsoft.Win32;
-
-namespace SipgateFaxdruckerCore
+namespace SipgateFaxdruckerInstallCustomAction
 {
- 
+
     public class SipgateFaxdruckerInstaller
     {
         #region Printer Driver Win32 API Constants
 
         const uint DRIVER_KERNELMODE = 0x00000001;
-        const uint DRIVER_USERMODE =  0x00000002;
-        
-        const uint APD_STRICT_UPGRADE =  0x00000001;
+        const uint DRIVER_USERMODE = 0x00000002;
+
+        const uint APD_STRICT_UPGRADE = 0x00000001;
         const uint APD_STRICT_DOWNGRADE = 0x00000002;
         const uint APD_COPY_ALL_FILES = 0x00000004;
         const uint APD_COPY_NEW_FILES = 0x00000008;
         const uint APD_COPY_FROM_DIRECTORY = 0x00000010;
-        
+
         const uint DPD_DELETE_UNUSED_FILES = 0x00000001;
         const uint DPD_DELETE_SPECIFIC_VERSION = 0x00000002;
         const uint DPD_DELETE_ALL_FILES = 0x00000004;
@@ -46,12 +45,12 @@ namespace SipgateFaxdruckerCore
         const string PRINTPROCESOR = "winprint";
 
         const string DRIVERMANUFACTURER = "sipgate GmbH";
-        
+
         const string DRIVERFILE = "PSCRIPT5.DLL";
         const string DRIVERUIFILE = "PS5UI.DLL";
         const string DRIVERHELPFILE = "PSCRIPT.HLP";
         const string DRIVERDATAFILE = "SCPDFPRN.PPD";
-        
+
         enum DriverFileIndex
         {
             Min = 0,
@@ -97,7 +96,7 @@ namespace SipgateFaxdruckerCore
             this.logEventSource.Listeners.Add(additionalListener);
         }
 
-        
+
         #region Constructors
 
         public SipgateFaxdruckerInstaller()
@@ -186,7 +185,7 @@ namespace SipgateFaxdruckerCore
 
             PRINTER_DEFAULTS def = new PRINTER_DEFAULTS
             {
-                pDatatype = null, 
+                pDatatype = null,
                 pDevMode = IntPtr.Zero,
                 DesiredAccess = 1
             };
@@ -257,7 +256,9 @@ namespace SipgateFaxdruckerCore
 
                     MONITOR_INFO_2 newMonitor = new MONITOR_INFO_2
                     {
-                        pName = PORTMONITOR, pEnvironment = ENVIRONMENT_64, pDLLName = MONITORDLL
+                        pName = PORTMONITOR,
+                        pEnvironment = ENVIRONMENT_64,
+                        pDLLName = MONITORDLL
                     };
                     if (!AddPortMonitor(newMonitor))
                         logEventSource.TraceEvent(TraceEventType.Error,
@@ -361,7 +362,7 @@ namespace SipgateFaxdruckerCore
                 oldRedirectValue = DisableWow64Redirection();
 
                 monitorDllFullPathname = Path.Combine(Environment.SystemDirectory, monitorDll);
-                
+
                 File.Delete(monitorDllFullPathname);
                 monitorDllRemoved = true;
             }
@@ -370,15 +371,15 @@ namespace SipgateFaxdruckerCore
                 // This one is likely very bad -
                 // log and rethrow so we don't continue
                 // to try to uninstall
-                logEventSource.TraceEvent(TraceEventType.Critical, 
-                                          (int)TraceEventType.Critical, 
+                logEventSource.TraceEvent(TraceEventType.Critical,
+                                          (int)TraceEventType.Critical,
                                           NATIVE_COULDNOTENABLE64REDIRECTION + String.Format(WIN32ERROR, windows32Ex.NativeErrorCode.ToString()));
                 throw;
             }
             catch (IOException)
             {
                 // File still in use
-                logEventSource.TraceEvent(TraceEventType.Error, (int)TraceEventType.Error, String.Format(FILENOTDELETED_INUSE, monitorDllFullPathname));  
+                logEventSource.TraceEvent(TraceEventType.Error, (int)TraceEventType.Error, String.Format(FILENOTDELETED_INUSE, monitorDllFullPathname));
             }
             catch (UnauthorizedAccessException)
             {
@@ -395,8 +396,8 @@ namespace SipgateFaxdruckerCore
                 {
                     // Couldn't turn file redirection back on -
                     // this is not good
-                    logEventSource.TraceEvent(TraceEventType.Critical, 
-                                              (int)TraceEventType.Critical, 
+                    logEventSource.TraceEvent(TraceEventType.Critical,
+                                              (int)TraceEventType.Critical,
                                               NATIVE_COULDNOTREVERT64REDIRECTION + String.Format(WIN32ERROR, windows32Ex.NativeErrorCode.ToString()));
                     throw;
                 }
@@ -689,7 +690,7 @@ namespace SipgateFaxdruckerCore
                 filesCopied = true;
             }
             catch (IOException ioEx)
-            { 
+            {
                 logEventSource.TraceEvent(TraceEventType.Error,
                                           (int)TraceEventType.Error,
                                           String.Format(FILENOTCOPIED_PRINTERDRIVER, ioEx.Message));
@@ -899,7 +900,7 @@ namespace SipgateFaxdruckerCore
             {
                 logEventSource.TraceEvent(TraceEventType.Error,
                                           (int)TraceEventType.Error,
-                                          "Could not add sipgate faxdrucker virtual printer. " + 
+                                          "Could not add sipgate faxdrucker virtual printer. " +
                                           String.Format(WIN32ERROR, Marshal.GetLastWin32Error().ToString()));
             }
             return printerAdded;
@@ -914,7 +915,7 @@ namespace SipgateFaxdruckerCore
                 DesiredAccess = 0x000F000C, // All access
                 pDatatype = null,
                 pDevMode = IntPtr.Zero
-            }; 
+            };
 
             IntPtr scribeHandle = IntPtr.Zero;
             try
@@ -928,7 +929,7 @@ namespace SipgateFaxdruckerCore
                 {
                     logEventSource.TraceEvent(TraceEventType.Error,
                                               (int)TraceEventType.Error,
-                                              "Could not delete sipgate faxdrucker virtual printer. "  +
+                                              "Could not delete sipgate faxdrucker virtual printer. " +
                                               String.Format(WIN32ERROR, Marshal.GetLastWin32Error().ToString()));
                 }
             }
@@ -960,7 +961,7 @@ namespace SipgateFaxdruckerCore
             {
                 int errorCode = Marshal.GetLastWin32Error();
                 if (errorCode == 0x5) sipgateFaxdruckerInstalled = true; // Printer is installed, but user
-                                                                 // has no privileges to use it
+                                                                         // has no privileges to use it
             }
 
             return sipgateFaxdruckerInstalled;
@@ -987,7 +988,7 @@ namespace SipgateFaxdruckerCore
 
         }
 
-        
+
         private bool ConfigureSipgateFaxdruckerPort(String commandValue,
                                             String argumentsValue)
         {
@@ -997,7 +998,7 @@ namespace SipgateFaxdruckerCore
             RegistryKey portConfiguration;
             try
             {
-                portConfiguration = Registry.LocalMachine.CreateSubKey("SYSTEM\\CurrentControlSet\\Control\\Print\\Monitors\\" + 
+                portConfiguration = Registry.LocalMachine.CreateSubKey("SYSTEM\\CurrentControlSet\\Control\\Print\\Monitors\\" +
                                                                                 PORTMONITOR +
                                                                                 "\\Ports\\" + PORTNAME);
                 portConfiguration.SetValue("Description", "sipgate faxdrucker", RegistryValueKind.String);

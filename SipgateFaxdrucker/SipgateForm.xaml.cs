@@ -1,4 +1,11 @@
-﻿using System;
+﻿using AutoUpdaterDotNET;
+using Microsoft.Rest;
+using PhoneNumbers;
+using SipgateFaxdrucker.GhostScript;
+using SipgateFaxdrucker.Properties;
+using SipgateFaxdrucker.SipgateAPI;
+using SipgateFaxdrucker.SipgateAPI.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,13 +21,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
-using AutoUpdaterDotNET;
-using Microsoft.Rest;
-using PhoneNumbers;
-using SipgateFaxdrucker.GhostScript;
-using SipgateFaxdrucker.Properties;
-using SipgateFaxdrucker.SipgateAPI;
-using SipgateFaxdrucker.SipgateAPI.Models;
 using static SipgateFaxdrucker.Authentication;
 using static SipgateFaxdrucker.SipgateAPI.SipgateApi;
 

@@ -2,10 +2,10 @@
 // Changes may cause incorrect behavior and will be lost if the code is
 // regenerated.
 
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Rest;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SipgateFaxdrucker.SipgateAPI.Models
 {

@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Text;
 using System.Runtime.InteropServices;
+using System.Text;
 
-namespace SipgateFaxdruckerCore
+namespace SipgateFaxdruckerInstallCustomAction
 {
 
     #region Native Method Structures
@@ -138,7 +138,7 @@ namespace SipgateFaxdruckerCore
                                         uint cbOutputData,
                                         out uint pcbOutputNeeded,
                                         out uint pwdStatus);
- 
+
 
 
         [DllImport("winspool.drv", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
@@ -150,13 +150,13 @@ namespace SipgateFaxdruckerCore
                                                PRINTER_DEFAULTS pDefault);
 
         [DllImport("winspool.drv", SetLastError = true)]
-        internal static extern int ClosePrinter(IntPtr hPrinter);    
+        internal static extern int ClosePrinter(IntPtr hPrinter);
 
         [DllImport("winspool.drv", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
         internal static extern bool DeletePrinter(IntPtr hPrinter);
 
 
-        [DllImport("winspool.drv", EntryPoint="AddPrinterDriver", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("winspool.drv", EntryPoint = "AddPrinterDriver", CharSet = CharSet.Auto, SetLastError = true)]
         internal static extern bool AddPrinterDriver(String pName,
                                                    int Level,
                                                    ref DRIVER_INFO_6 pDriverInfo);

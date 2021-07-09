@@ -1,11 +1,11 @@
 ﻿using PhoneNumbers;
+using SipgateFaxdrucker.Properties;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using SipgateFaxdrucker.Properties;
 
 namespace SipgateFaxdrucker
 {
@@ -178,7 +178,7 @@ namespace SipgateFaxdrucker
 
             return $"File Size: {len:0.##} {sizes[order]}";
         }
-       
+
         #region Logs
         public static void LogCritical(string logLine, int eventId = 0)
         {

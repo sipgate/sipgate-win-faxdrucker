@@ -2,13 +2,13 @@
 // Changes may cause incorrect behavior and will be lost if the code is
 // regenerated.
 
+using Microsoft.Rest;
+using Newtonsoft.Json;
+using SipgateFaxdrucker.SipgateAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Rest;
-using Newtonsoft.Json;
-using SipgateFaxdrucker.SipgateAPI.Models;
 
 namespace SipgateFaxdrucker.SipgateAPI
 {
@@ -40,7 +40,7 @@ namespace SipgateFaxdrucker.SipgateAPI
         ServiceClientCredentials Credentials { get; }
 
 
-            /// <summary>
+        /// <summary>
         /// Send a fax
         /// </summary>
         /// <param name='body'>

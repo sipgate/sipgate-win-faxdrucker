@@ -2,11 +2,11 @@
 // Changes may cause incorrect behavior and will be lost if the code is
 // regenerated.
 
+using Microsoft.Rest;
+using SipgateFaxdrucker.SipgateAPI.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Rest;
-using SipgateFaxdrucker.SipgateAPI.Models;
 
 namespace SipgateFaxdrucker.SipgateAPI
 {
@@ -51,12 +51,13 @@ namespace SipgateFaxdrucker.SipgateAPI
             catch (HttpOperationException hex)
             {
                 return new SendFaxSessionResponse(null, hex.Response.StatusCode);
-            }catch(Exception exception)
+            }
+            catch (Exception exception)
             {
                 Utils.LogCritical("Failed to send fax: " + exception.Message);
-                return new SendFaxSessionResponse(null,System.Net.HttpStatusCode.InternalServerError);
+                return new SendFaxSessionResponse(null, System.Net.HttpStatusCode.InternalServerError);
             }
-          
+
         }
 
         /// <summary>

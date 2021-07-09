@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+using SipgateFaxdrucker.Properties;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -9,8 +11,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Newtonsoft.Json;
-using SipgateFaxdrucker.Properties;
 
 namespace SipgateFaxdrucker
 {
@@ -334,7 +334,8 @@ namespace SipgateFaxdrucker
 
                 SipgateCredentials credentials = await ProcessRefreshReponse(tokenRequest);
                 return credentials;
-            }catch (WebException wex)
+            }
+            catch (WebException wex)
             {
 
                 if (wex.Status == WebExceptionStatus.NameResolutionFailure || wex.Status == WebExceptionStatus.ConnectFailure)

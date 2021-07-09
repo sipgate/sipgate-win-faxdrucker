@@ -340,12 +340,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SipgateFaxdruckerCore\SipgateFaxdruckerCore.csproj">
-      <Project>{1EAD8E9A-A123-4C37-B31E-AEE1354DF003}</Project>
-      <Name>SipgateFaxdruckerCore</Name>
-    </ProjectReference>
+    <Folder Include="Model\" />
+    <Folder Include="ViewModel\" />
+    <Folder Include="View\" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

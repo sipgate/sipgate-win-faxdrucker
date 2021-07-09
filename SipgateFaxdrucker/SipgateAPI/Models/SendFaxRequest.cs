@@ -77,7 +77,7 @@ namespace SipgateFaxdrucker.SipgateAPI.Models
                     throw new ValidationException(ValidationRules.MinLength, "Base64Content", 0);
                 }
             }
-            
+
         }
         public override string ToString()
         {

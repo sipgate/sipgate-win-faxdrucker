@@ -7,19 +7,19 @@ namespace SipgateFaxdrucker.GhostScript
 {
     public class GhostScriptRunner
     {
-        
+
         private String _outputFilename = String.Empty;
-        
+
         const string TraceSourceName = "SipgateFaxdrucker";
         private static readonly TraceSource LogEventSource = new TraceSource(TraceSourceName);
-        
+
 
         public string Print(String standardInputFilename)
         {
             ErrorDialog errorDialog = new ErrorDialog(LogEventSource);
 
             var sizeInfo = Utils.GetFileSize(standardInputFilename);
-            Utils.LogCritical("standardinputfilename before : "+ sizeInfo);
+            Utils.LogCritical("standardinputfilename before : " + sizeInfo);
             try
             {
                 using (BinaryReader standardInputReader = new BinaryReader(Console.OpenStandardInput()))
@@ -27,9 +27,9 @@ namespace SipgateFaxdrucker.GhostScript
                     using (FileStream standardInputFile =
                         new FileStream(standardInputFilename, FileMode.Create, FileAccess.ReadWrite))
                     {
-                        standardInputReader.BaseStream.CopyTo(standardInputFile);                             
+                        standardInputReader.BaseStream.CopyTo(standardInputFile);
 
-                    }                    
+                    }
                 }
 
                 if (GetPdfOutputFilename(ref _outputFilename))
@@ -56,7 +56,7 @@ namespace SipgateFaxdrucker.GhostScript
             }
             catch (IOException ioEx)
             {
-                errorDialog.Show(ioEx,_outputFilename);
+                errorDialog.Show(ioEx, _outputFilename);
             }
             catch (UnauthorizedAccessException unauthorizedEx)
             {
@@ -90,7 +90,7 @@ namespace SipgateFaxdrucker.GhostScript
         {
             bool filenameRetrieved = false;
             ErrorDialog errorDialog = new ErrorDialog(LogEventSource);
-            
+
             try
             {
                 outputFile = GetOutputFilename();
@@ -125,10 +125,10 @@ namespace SipgateFaxdrucker.GhostScript
             var currentDateTimeString = DateTime.Now.ToString("dd-MM-yyyy HH-mm");
             var settingsPathPart = Path.GetTempPath();
             var completePath = settingsPathPart + currentDateTimeString + ".pdf";
-            
+
             String defaultOutputFilename =
                 Path.GetFullPath(completePath);
-            
+
             // Check if there are any % characters -
             // even though it's a legal Windows filename character,
             // it is a special character to Ghostscript

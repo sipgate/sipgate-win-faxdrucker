@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Deployment.WindowsInstaller;
+using System;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using Microsoft.Deployment.WindowsInstaller;
-
-using SipgateFaxdruckerCore;
 
 namespace SipgateFaxdruckerInstallCustomAction
 {
@@ -66,7 +60,7 @@ namespace SipgateFaxdruckerInstallCustomAction
             {
                 if (installTraceListener != null)
                     installTraceListener.Dispose();
-                
+
             }
             return printerInstalled;
         }

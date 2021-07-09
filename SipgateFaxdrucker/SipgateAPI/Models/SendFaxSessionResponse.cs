@@ -2,8 +2,8 @@
 // Changes may cause incorrect behavior and will be lost if the code is
 // regenerated.
 
-using System.Net;
 using Newtonsoft.Json;
+using System.Net;
 
 namespace SipgateFaxdrucker.SipgateAPI.Models
 {

@@ -66,14 +66,6 @@
     <EmbeddedResource Include="DialogOverrides.wxl" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SipgateFaxdruckerCore\SipgateFaxdruckerCore.csproj">
-      <Name>SipgateFaxdruckerCore</Name>
-      <Project>{1ead8e9a-a123-4c37-b31e-aee1354df003}</Project>
-      <Private>True</Private>
-      <DoNotHarvest>True</DoNotHarvest>
-      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
-      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
-    </ProjectReference>
     <ProjectReference Include="..\SipgateFaxdruckerInstallCustomAction\SipgateFaxdruckerInstallCustomAction.csproj">
       <Name>SipgateFaxdruckerInstallCustomAction</Name>
       <Project>{e8679e1b-8c89-4201-97d5-7e43c5a486c9}</Project>

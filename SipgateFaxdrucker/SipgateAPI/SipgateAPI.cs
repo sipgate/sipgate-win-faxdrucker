@@ -2,6 +2,10 @@
 // Changes may cause incorrect behavior and will be lost if the code is
 // regenerated.
 
+using Microsoft.Rest;
+using Microsoft.Rest.Serialization;
+using Newtonsoft.Json;
+using SipgateFaxdrucker.SipgateAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -9,10 +13,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Rest;
-using Microsoft.Rest.Serialization;
-using Newtonsoft.Json;
-using SipgateFaxdrucker.SipgateAPI.Models;
 
 namespace SipgateFaxdrucker.SipgateAPI
 {
@@ -636,7 +636,7 @@ namespace SipgateFaxdrucker.SipgateAPI
                 invocationId = ServiceClientTracing.NextInvocationId.ToString();
                 Dictionary<string, object> tracingParameters = new Dictionary<string, object>
                 {
-                    {"entryId", entryId}, 
+                    {"entryId", entryId},
                     {"cancellationToken", cancellationToken}
                 };
                 ServiceClientTracing.Enter(invocationId, this, "GetHistoryById", tracingParameters);

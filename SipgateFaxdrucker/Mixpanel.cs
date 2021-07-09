@@ -1,17 +1,17 @@
 ﻿using Mixpanel;
+using SipgateFaxdrucker.Properties;
+using SipgateFaxdrucker.SipgateAPI.Models;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
-using SipgateFaxdrucker.Properties;
-using SipgateFaxdrucker.SipgateAPI.Models;
 
 namespace SipgateFaxdrucker
 {
     class Mixpanel
     {
-        static readonly HttpClient HttpClient = new HttpClient();       
+        static readonly HttpClient HttpClient = new HttpClient();
         private readonly UserinfoResponse _userinfo;
         private MixpanelClient _mc;
 
@@ -43,7 +43,7 @@ namespace SipgateFaxdrucker
                     DistinctId = Utils.CreateSha256Hash($"{_userinfo.MasterSipId}{_userinfo.Sub}"),
                     account_id = Utils.CreateSha256Hash(_userinfo.MasterSipId),
                     OS = Environment.OSVersion.VersionString,
-                    Is64Bit= Environment.Is64BitOperatingSystem.ToString(),
+                    Is64Bit = Environment.Is64BitOperatingSystem.ToString(),
                 };
 
                 MixpanelConfig config = new MixpanelConfig

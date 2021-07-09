@@ -1,11 +1,11 @@
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Windows.Media;
-using System.Windows.Threading;
-using System.Windows;
 using SipgateFaxdrucker.SipgateAPI;
 using SipgateFaxdrucker.SipgateAPI.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace SipgateFaxdrucker
 {
@@ -42,7 +42,7 @@ namespace SipgateFaxdrucker
 
         public void PollForStatus(SipgateForm form)
         {
-            var timer = new DispatcherTimer {Interval = TimeSpan.FromSeconds(1)};
+            var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
 
             timer.Tick += async (sender, e) =>
             {
@@ -63,7 +63,7 @@ namespace SipgateFaxdrucker
 
                 if (status != null)
                 {
-                   FaxStatusDetail faxStatusDetail = FaxStatus._status[status];
+                    FaxStatusDetail faxStatusDetail = FaxStatus._status[status];
                     if (faxStatusDetail != null)
                     {
                         form.TextSendStatus.Text = faxStatusDetail.Translation;

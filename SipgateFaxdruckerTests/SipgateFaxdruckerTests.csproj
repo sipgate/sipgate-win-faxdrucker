@@ -66,9 +66,9 @@
     <Analyzer Include="..\packages\xunit.analyzers.0.8.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SipgateFaxdruckerCore\SipgateFaxdruckerCore.csproj">
-      <Project>{1ead8e9a-a123-4c37-b31e-aee1354df003}</Project>
-      <Name>SipgateFaxdruckerCore</Name>
+    <ProjectReference Include="..\SipgateFaxdruckerInstallCustomAction\SipgateFaxdruckerInstallCustomAction.csproj">
+      <Project>{e8679e1b-8c89-4201-97d5-7e43c5a486c9}</Project>
+      <Name>SipgateFaxdruckerInstallCustomAction</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
