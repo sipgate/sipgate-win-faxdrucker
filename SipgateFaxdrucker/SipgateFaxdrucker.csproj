@@ -273,6 +273,9 @@
     <Compile Include="SipgateAPI\SipgateAPI.cs" />
     <Compile Include="SipgateAPI\SipgateAPIExtensions.cs" />
     <Compile Include="Model\SipgateCredentials.cs" />
+    <Compile Include="View\FaxView.xaml.cs">
+      <DependentUpon>FaxView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
@@ -313,6 +316,10 @@
     <None Include="Resources\swagger_fax.json" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\FaxView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\LoginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

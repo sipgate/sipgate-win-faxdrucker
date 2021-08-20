@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SipgateFaxdrucker
 {
-    class Mixpanel
+    public class Mixpanel
     {
         static readonly HttpClient HttpClient = new HttpClient();
         private readonly UserinfoResponse _userinfo;
