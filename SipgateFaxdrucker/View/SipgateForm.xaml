@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:svgc="http://sharpvectors.codeplex.com/svgc/"
         xmlns:local="clr-namespace:SipgateFaxdrucker"
-        xmlns:converter="clr-namespace:SipgateFaxdrucker.Converter"
+        xmlns:converter="clr-namespace:SipgateFaxdrucker.Converter" xmlns:view="clr-namespace:SipgateFaxdrucker.View"
         mc:Ignorable="d"
         Title="sipgate Faxdrucker" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -53,24 +53,8 @@
     </Window.Resources>
     <Grid x:Name="MainGrid" Margin="24">
         <StackPanel VerticalAlignment="Center">
-            <StackPanel x:Name="LoginView" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,10" IsVisibleChanged="LoginView_IsVisibleChanged">
-                <svgc:SvgViewbox Margin="0,0,0,30" Source="/Resources/icon-lock.svg" Height="64" HorizontalAlignment="Center"/>
-                <TextBlock Margin="0,0,0,20" Text="Willkommen im sipgate Faxdrucker" FontSize="16" Foreground="#FF3C3C3C" HorizontalAlignment="Center"/>
-                <Button Background="{x:Null}" Padding="20,10,20,10" Margin="10,0,10,0"  Click="LoginButton_Click">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock  FontSize="16" Margin="0,0,5,0" VerticalAlignment="Center" Foreground="#FF3C3C3C">Im Browser anmelden</TextBlock>
-                        <svgc:SvgViewbox Margin="4,0,0,0" Source="/Resources/icon-external-link.svg" Height="16" HorizontalAlignment="Right"/>
-                    </StackPanel>
-                </Button>
-                <TextBlock x:Name="ErrorText" MaxWidth="240" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,8,0,0" Visibility="Hidden" TextWrapping="Wrap">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Foreground" Value="#c90c2f"></Setter>
-                        </Style>
-                    </TextBlock.Style>
-                    Error
-                </TextBlock>
-            </StackPanel>
+         <view:LoginView  x:Name="LoginView"></view:LoginView>
+           
             <StackPanel x:Name="FaxView" MinWidth="200" VerticalAlignment="Center" HorizontalAlignment="Center" IsVisibleChanged="FaxView_IsVisibleChanged" Height="380" Visibility="Collapsed">
                 <svgc:SvgViewbox Margin="0,0,0,30" Source="/Resources/fax-icon.svg" Height="64" HorizontalAlignment="Center"/>
 

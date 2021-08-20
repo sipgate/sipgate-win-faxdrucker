@@ -18,12 +18,12 @@ namespace SipgateFaxdrucker.Utils.Auth
     {
         private readonly string _clientId = Settings.Default.ClientId;
 #if DEBUG
-        private static string _keycloakBaseUrl = "https://login.dev.sipgate.com";
+      //  private static string _keycloakBaseUrl = "https://login.dev.sipgate.com";
 #else
-        private static string _keycloakBaseUrl = Settings.Default.LoginBaseUrl;
+       
 #endif
-
-        private readonly string _tokenUrl = _keycloakBaseUrl +
+      private static string _keycloakBaseUrl = Settings.Default.LoginBaseUrl;
+      private readonly string _tokenUrl = _keycloakBaseUrl +
             @"/auth/realms/sipgate-apps/protocol/openid-connect/token";
 
         private readonly string _loginUrl = _keycloakBaseUrl +
