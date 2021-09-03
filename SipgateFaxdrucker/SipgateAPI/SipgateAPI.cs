@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -278,6 +279,9 @@ namespace SipgateFaxdrucker.SipgateAPI
                 }
             }
 
+            httpRequest.Headers.Add("x-sipgate-client", "windows-faxdrucker");
+            httpRequest.Headers.Add("x-sipgate-version", Assembly.GetEntryAssembly().GetName().Version.ToString());
+
             // Serialize Request
             string requestContent = null;
             if (body != null)
@@ -413,6 +417,9 @@ namespace SipgateFaxdrucker.SipgateAPI
                 }
             }
 
+            httpRequest.Headers.Add("x-sipgate-client", "windows-faxdrucker");
+            httpRequest.Headers.Add("x-sipgate-version", Assembly.GetEntryAssembly().GetName().Version.ToString());
+
             // Serialize Request
             string requestContent = null;
             // Set Credentials
@@ -536,6 +543,9 @@ namespace SipgateFaxdrucker.SipgateAPI
                     httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
                 }
             }
+
+            httpRequest.Headers.Add("x-sipgate-client", "windows-faxdrucker");
+            httpRequest.Headers.Add("x-sipgate-version", Assembly.GetEntryAssembly().GetName().Version.ToString());
 
             // Serialize Request
             string requestContent = null;
@@ -661,6 +671,9 @@ namespace SipgateFaxdrucker.SipgateAPI
                     httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
                 }
             }
+
+            httpRequest.Headers.Add("x-sipgate-client", "windows-faxdrucker");
+            httpRequest.Headers.Add("x-sipgate-version", Assembly.GetEntryAssembly().GetName().Version.ToString());
 
             // Serialize Request
             string requestContent = null;
@@ -795,6 +808,9 @@ namespace SipgateFaxdrucker.SipgateAPI
                     httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
                 }
             }
+
+            httpRequest.Headers.Add("x-sipgate-client", "windows-faxdrucker");
+            httpRequest.Headers.Add("x-sipgate-version", Assembly.GetEntryAssembly().GetName().Version.ToString());
 
             // Serialize Request
             string requestContent = null;
@@ -934,6 +950,9 @@ namespace SipgateFaxdrucker.SipgateAPI
                 }
             }
 
+            httpRequest.Headers.Add("x-sipgate-client", "windows-faxdrucker");
+            httpRequest.Headers.Add("x-sipgate-version", Assembly.GetEntryAssembly().GetName().Version.ToString());
+
             // Serialize Request
             string requestContent = null;
             // Set Credentials
@@ -1038,6 +1057,9 @@ namespace SipgateFaxdrucker.SipgateAPI
                     httpRequest.Headers.TryAddWithoutValidation(header.Key, header.Value);
                 }
             }
+
+            httpRequest.Headers.Add("x-sipgate-client", "windows-faxdrucker");
+            httpRequest.Headers.Add("x-sipgate-version", Assembly.GetEntryAssembly().GetName().Version.ToString());
 
             // Serialize Request
             string requestContent = null;
