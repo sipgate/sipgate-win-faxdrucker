@@ -976,22 +976,6 @@ namespace SipgateFaxdrucker
                     Utils.LogCritical($"Error fetching faxlines: {e.Message}");
                 }
 
-                if (faxlines == null || faxlines.Items == null || faxlines.Items.Count == 0)
-                {
-                    Utils.LogWarning("No faxlines exist");
-                    FaxlineErrorText.Text = "Sie haben aktuell keinen Faxanschluss.";
-                    FaxlineErrorText.Visibility = Visibility.Visible;
-                    return;
-                }
-
-                foreach (FaxlineResponse faxline in faxlines.Items)
-                {
-                    if (faxline.CanSend.HasValue && faxline.CanSend.Value)
-                    {
-                        _faxlinesItem.Add(new SelectableFaxline(faxline));
-                    }
-                }
-
                 groupFaxlines = await _faxManager.GetGroupFaxLineAsync(apiClient);
 
                 foreach (GroupFaxlineResponse groupFaxline in groupFaxlines.Items)
@@ -1001,11 +985,26 @@ namespace SipgateFaxdrucker
                         _faxlinesItem.Add(new SelectableFaxline(groupFaxline));
                     }
                 }
+                
+
+                foreach (FaxlineResponse faxline in faxlines.Items)
+                {
+                    if (faxline.CanSend.HasValue && faxline.CanSend.Value)
+                    {
+                        _faxlinesItem.Add(new SelectableFaxline(faxline));
+                    }
+                }
 
                 if (_faxlinesItem.Count > 0)
                 {
                     Utils.LogCritical("faxlinesItem Count:" + _faxlinesItem.Count);
                     FaxlinesDropdown.SelectedIndex = 0;
+                }
+                else
+                {
+                    Utils.LogWarning("No faxlines exist");
+                    FaxlineErrorText.Text = "Sie haben aktuell keinen Faxanschluss.";
+                    FaxlineErrorText.Visibility = Visibility.Visible;
                 }
 
             }
