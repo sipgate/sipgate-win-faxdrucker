@@ -39,7 +39,7 @@ namespace SipgateFaxdruckerCore
         const string ENVIRONMENT_64 = null; // auto-detect
         const string PRINTERNAME = "sipgate-Faxdrucker";
         const string DRIVERNAME = "sipgate faxdrucker Virtual Printer";
-        const string HARDWAREID = "PDFScribe_Driver0101";
+        const string HARDWAREID = "SGFAX_Driver0101";
         const string PORTMONITOR = "SGFAX";
         private readonly string MONITORDLL = Environment.Is64BitOperatingSystem ? "redmon64pdfscribe.dll" : "redmon32pdfscribe.dll";
         const string PORTNAME = "SGFAX:";
