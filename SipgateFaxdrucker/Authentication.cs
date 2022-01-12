@@ -71,7 +71,7 @@ namespace SipgateFaxdrucker
             }
             catch (HttpListenerException e)
             {
-                return http;
+                return null;
             }
 
             return http;
@@ -249,7 +249,9 @@ namespace SipgateFaxdrucker
         public async Task<SipgateCredentials> PerformCodeExchange(string code)
         {
             HttpWebRequest tokenRequest = (HttpWebRequest)WebRequest.Create(_tokenUrl);
-
+#if DEBUG
+            tokenRequest.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+#endif
             try
             {
                 SipgateCredentials sipgateCredentials = await ProcessCodeResponse(await PrepareCodeExchangeRequest(tokenRequest, code));
@@ -304,7 +306,9 @@ namespace SipgateFaxdrucker
 
             byte[] byteVersion = Encoding.ASCII.GetBytes($"{tokenRequestBody}");
 
+#if DEBUG
             tokenRequest.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+#endif
             tokenRequest.Method = "POST";
             tokenRequest.ContentType = "application/x-www-form-urlencoded";
             tokenRequest.Accept = "application/json";

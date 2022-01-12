@@ -704,6 +704,9 @@ namespace SipgateFaxdrucker
 
                 var sessionId = await _faxManager.SendFileWithSipgateApi(_selectedFaxlineId, GetApiClient());
 
+                File.Delete(_filename);
+                _filename = null;
+
                 if (sessionId != null)
                 {
                     TextSendStatus.Text = "Dokument erfolgreich übermittelt!";

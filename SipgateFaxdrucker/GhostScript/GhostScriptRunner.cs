@@ -124,7 +124,7 @@ namespace SipgateFaxdrucker.GhostScript
         {
             var currentDateTimeString = DateTime.Now.ToString("dd-MM-yyyy HH-mm");
             var settingsPathPart = Path.GetTempPath();
-            var completePath = settingsPathPart + currentDateTimeString + ".pdf";
+            var completePath = $"{settingsPathPart}SipgateFaxdrucker_{currentDateTimeString}.pdf";
             
             String defaultOutputFilename =
                 Path.GetFullPath(completePath);
