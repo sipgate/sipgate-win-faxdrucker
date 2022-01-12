@@ -542,14 +542,22 @@ namespace SipgateFaxdrucker
                 if (authCode != "")
                 {
                     var sipgateCredentials = await auth.PerformCodeExchange(authCode);
-                    _credentialManager.SaveCredentials(sipgateCredentials);
-                    ShowPage(FormPage.TargetNumber);
-                    var apiClient = GetApiClient();
+                    if (sipgateCredentials == null)
+                    {
+                        auth.SendHttpResponse(context, false);
+                        MessageBox.Show("Authentifizierung nicht möglich.", "sipgate Faxdrucker Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    else
+                    {
+                        _credentialManager.SaveCredentials(sipgateCredentials);
+                        ShowPage(FormPage.TargetNumber);
+                        var apiClient = GetApiClient();
 
-                    await SetEligibleFaxlines(FaxlinesDropdown, apiClient);
-                    Utils.LogInformation($"Token:\n{sipgateCredentials.AccessToken}");
-                    Utils.LogInformation("About to send success http response");
-                    auth.SendHttpResponse(context, true);
+                        await SetEligibleFaxlines(FaxlinesDropdown, apiClient);
+                        Utils.LogInformation($"Token:\n{sipgateCredentials.AccessToken}");
+                        Utils.LogInformation("About to send success http response");
+                        auth.SendHttpResponse(context, true);
+                    }
                 }
                 else
                 {
@@ -601,6 +609,11 @@ namespace SipgateFaxdrucker
                 if (authCode != "")
                 {
                     var sipgateCredentials = await auth.PerformCodeExchange(authCode);
+                    if (sipgateCredentials == null)
+                    {
+                        MessageBox.Show("Authentifizierung nicht möglich.", "sipgate Faxdrucker Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
                     _credentialManager.SaveCredentials(sipgateCredentials);
                     ShowPage(FormPage.TargetNumber);
                     var apiClient = GetApiClient();
