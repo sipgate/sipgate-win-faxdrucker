@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dependencies": {
-    ".NETFramework,Version=v4.6.1": {
+    ".NETFramework,Version=v4.6.2": {
       "Autoupdater.NET.Official": {
         "type": "Direct",
         "requested": "[1.6.4, 1.6.4]",
