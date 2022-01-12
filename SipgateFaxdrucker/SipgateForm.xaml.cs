@@ -35,7 +35,8 @@ namespace SipgateFaxdrucker
         {
             Login,
             TargetNumber,
-            SendingStatus
+            SendingStatus,
+            LoginPerCode
         }
         private const int MaxContactsSupported = 1000;
         private const double FaxCostsInCent = 1.79;
@@ -291,6 +292,12 @@ namespace SipgateFaxdrucker
             ErrorText.Visibility = Visibility.Hidden;
         }
 
+        private void LoginPerCodeView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ErrorCodeText.Visibility = Visibility.Hidden;
+            ErrorCodeText.Text = "";
+        }
+
         private async void FaxView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
 
@@ -487,7 +494,6 @@ namespace SipgateFaxdrucker
         private async Task LoginUser()
         {
             var auth = new Authentication();
-            HttpListenerContext context = null;
 
             ClearErrorMessage();
 
@@ -497,52 +503,59 @@ namespace SipgateFaxdrucker
                 if (sipgateCredentials == null)
                 {
 
-                    Utils.LogInformation($"Redirect uri: {auth.redirectUri}");
-                    HttpListener httpListener = auth.CreateLoginBrowserWindow();
-                    Utils.LogInformation("Initialized http listener");
-                    context = await auth.AwaitResponse(httpListener);
-                    Utils.LogInformation("Created listener");
-                    Utils.LogInformation("About to send http response");
-
-                    Utils.LogInformation("Http response sent");
-
-                    Activate();
-                    string authCode = auth.ProcessResult(context);
-                    Utils.LogInformation($"Auth code retrieved:\n{authCode}");
-
-                    if (authCode != "")
+                    HttpListener httpListener = auth.CreateHttpCallbackListener();
+                    if(httpListener != null)
                     {
-                        sipgateCredentials = await auth.PerformCodeExchange(authCode);
-                        _credentialManager.SaveCredentials(sipgateCredentials);
-                        ShowPage(FormPage.TargetNumber);
-                        var apiClient = GetApiClient();
-
-                        await SetEligibleFaxlines(FaxlinesDropdown, apiClient);
-                        Utils.LogInformation($"Token:\n{sipgateCredentials.AccessToken}");
-                        auth.SendHttpResponse(context, true);
-                    }
-                    else
+                        auth.CreateLoginBrowserWindow();
+                        Utils.LogInformation("Initialized http listener");
+                        ListenToLoginPerHttpListener(auth, httpListener);
+                    } else
                     {
-                        Utils.LogWarning("Login: no valid auth code to retrieve token with");
-                        auth.SendHttpResponse(context, false);
+                        auth.enableRedirectFallback();
+                        auth.CreateLoginBrowserWindow();
+                        Utils.LogInformation("Could not initialize http listener - fallback to manual mode");
+                        Activate();
+                        ShowPage(FormPage.LoginPerCode);
                     }
+                }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+                Utils.LogCritical($"Login error: {exc.Message}, {exc.GetType()}");
+            }
+        }
 
-                    if (httpListener.IsListening)
-                    {
-                        DispatcherTimer timer = new DispatcherTimer
-                        {
-                            Interval = TimeSpan.FromSeconds(4)
-                        };
+        private async void ListenToLoginPerHttpListener(Authentication auth, HttpListener httpListener)
+        {
+            HttpListenerContext context = null;
 
-                        timer.Tick += (sender, e) =>
-                        {
-                            httpListener.Stop();
-                        };
-                        timer.Start();
-                        timer.Stop();
+            context = await auth.AwaitResponse(httpListener);
 
-                        Utils.LogInformation("http Listener stopped");
-                    }
+            Activate();
+
+            try
+            {
+                string authCode = auth.ProcessResult(context);
+                Utils.LogInformation($"Auth code retrieved:\n{authCode}");
+
+                if (authCode != "")
+                {
+                    var sipgateCredentials = await auth.PerformCodeExchange(authCode);
+                    _credentialManager.SaveCredentials(sipgateCredentials);
+                    ShowPage(FormPage.TargetNumber);
+                    var apiClient = GetApiClient();
+
+                    await SetEligibleFaxlines(FaxlinesDropdown, apiClient);
+                    Utils.LogInformation($"Token:\n{sipgateCredentials.AccessToken}");
+                    Utils.LogInformation("About to send success http response");
+                    auth.SendHttpResponse(context, true);
+                }
+                else
+                {
+                    Utils.LogWarning("Login: no valid auth code to retrieve token with");
+                    Utils.LogInformation("About to send failure http response");
+                    auth.SendHttpResponse(context, false);
                 }
             }
             catch (AuthorizationException authex)
@@ -555,12 +568,59 @@ namespace SipgateFaxdrucker
                     Utils.LogInformation("Sending Failure Page");
                     auth.SendHttpResponse(context, false);
                 }
-
             }
-            catch (Exception exc)
+
+            if (httpListener.IsListening)
             {
-                MessageBox.Show(exc.Message);
-                Utils.LogCritical($"Login error: {exc.Message}, {exc.GetType()}");
+                DispatcherTimer timer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(4)
+                };
+
+                timer.Tick += (sender, e) =>
+                {
+                    httpListener.Stop();
+                };
+                timer.Start();
+                timer.Stop();
+
+                Utils.LogInformation("http Listener stopped");
+            }
+        }
+
+        private async void LoginPerCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var auth = new Authentication();
+            auth.enableRedirectFallback();
+
+            var authCode = LoginCode.Text;
+            Utils.LogInformation($"Auth code retrieved:\n{authCode}");
+
+            try
+            {
+                if (authCode != "")
+                {
+                    var sipgateCredentials = await auth.PerformCodeExchange(authCode);
+                    _credentialManager.SaveCredentials(sipgateCredentials);
+                    ShowPage(FormPage.TargetNumber);
+                    var apiClient = GetApiClient();
+
+                    await SetEligibleFaxlines(FaxlinesDropdown, apiClient);
+                    Utils.LogInformation($"Token:\n{sipgateCredentials.AccessToken}");
+                }
+                else
+                {
+                    Utils.LogWarning("Login: no valid auth code to retrieve token with");
+                    Utils.LogInformation("About to send failure http response");
+                    ErrorCodeText.Visibility = Visibility.Visible;
+                    ErrorCodeText.Text = "Bitte geben Sie einen Code ein";
+                }
+            }
+            catch (AuthorizationException authex)
+            {
+                Utils.LogCritical($"Error Authenticating: {authex.Message}");
+                ErrorCodeText.Visibility = Visibility.Visible;
+                ErrorCodeText.Text = "Ungültiger Code. Überprüfen Sie bitte Ihre Eingabe oder fordern Sie einen neuen Code im Browser an.";
             }
         }
 
@@ -923,14 +983,12 @@ namespace SipgateFaxdrucker
         {
             if (_credentialManager == null || !_credentialManager.IsLoggedIn())
             {
-                LoginView.Visibility = Visibility.Visible;
-                FaxView.Visibility = Visibility.Collapsed;
-                StatusView.Visibility = Visibility.Collapsed;
+                page = page == FormPage.LoginPerCode ? FormPage.LoginPerCode : FormPage.Login;
                 Utils.LogInformation("not authorized. staying at login");
-                return;
             }
 
             LoginView.Visibility = page == FormPage.Login ? Visibility.Visible : Visibility.Collapsed;
+            LoginPerCodeView.Visibility = page == FormPage.LoginPerCode ? Visibility.Visible : Visibility.Collapsed;
             FaxView.Visibility = page == FormPage.TargetNumber ? Visibility.Visible : Visibility.Collapsed;
             StatusView.Visibility = page == FormPage.SendingStatus ? Visibility.Visible : Visibility.Collapsed;
 
@@ -940,6 +998,12 @@ namespace SipgateFaxdrucker
                 {
                     Utils.LogInformation("Sending PageView Event to Mixpanel");
                     _ = _mixpanel.TrackPageView("/LoginView");
+
+                }
+                else if (page == FormPage.LoginPerCode)
+                {
+                    Utils.LogInformation("Sending PageView Event to Mixpanel");
+                    _ = _mixpanel.TrackPageView("/LoginPerCodeView");
 
                 }
                 else if (page == FormPage.SendingStatus)
