@@ -297,6 +297,8 @@ namespace SipgateFaxdrucker
 
         private async Task<HttpWebRequest> PrepareCodeExchangeRequest(HttpWebRequest tokenRequest, string code)
         {
+
+
             NameValueCollection tokenRequestBody = System.Web.HttpUtility.ParseQueryString(string.Empty);
             tokenRequestBody.Add("code", code);
             tokenRequestBody.Add("client_id", _clientId);

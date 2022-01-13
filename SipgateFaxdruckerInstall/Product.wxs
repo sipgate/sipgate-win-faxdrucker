@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?define ProductVersion="!(bind.fileVersion.SipgateFaxdruckerExe)" ?>
+<?if $(var.Platform) = x64 ?>
+	<?define Win64 = "yes" ?>
+	<?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?else ?>
+	<?define Win64 = "no" ?>
+	<?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?endif ?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"  xmlns:netfx ="http://schemas.microsoft.com/wix/NetFxExtension">
 	<Product Id="*" Name="sipgate Faxdrucker" Language="1033" Version="$(var.ProductVersion)" Manufacturer="sipgate GmbH" UpgradeCode="409ff0d1-1c3a-4f8d-8a5a-350705977809">
 		<Package InstallerVersion="408" Compressed="yes" InstallScope="perMachine"
@@ -30,6 +38,8 @@
 
 		<!-- Check if the user has administrator privileges -->
 		<Property Id="MSIUSEREALADMINDETECTION" Value="1" />
+
+		<Property Id="MsiLogging" Value="v" />
 
 		<!-- Custom Actions -->
 		<Binary Id="SipgateFaxdruckerInstallCustomAction.CA.dll" SourceFile="$(var.SipgateFaxdruckerInstallCustomAction.TargetDir)$(var.SipgateFaxdruckerInstallCustomAction.TargetName).CA.dll" />
@@ -65,7 +75,7 @@
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFiles64Folder">
+			<Directory Id="$(var.PlatformProgramFilesFolder)">
 				<Directory Id="INSTALLFOLDER" Name="SipgateFaxdrucker" />
 			</Directory>
 		</Directory>
@@ -92,13 +102,8 @@
 			<Component Id="SipgateFaxdruckerCoreDllPdb" Guid="{8979618A-C1B1-40B6-A400-D8DAF159184D}">
 				<File Source="$(var.SipgateFaxdruckerCore.TargetDir)$(var.SipgateFaxdruckerCore.TargetName).pdb" KeyPath="yes" />
 			</Component>
-			<!-- Third party components -->
-			<Component Id="gsdll64dll" Guid="{96C2E5A1-15AD-4B27-A184-7AC1C2F08409}">
-				<File Source="..\Lib\gsdll64.dll" KeyPath="yes" />
-			</Component>
-			<Component Id="gsdll32dll" Guid="{37A9E92F-3123-42E5-AE9A-3F8E62B22EBE}">
-				<File Source="..\Lib\gsdll32.dll" KeyPath="yes" />
-			</Component>
+			<!-- Third party components -->			
+		
 			<Component Id="MicrosoftRestClientRuntime" Guid="{234FAFAA-FA7E-4307-87DF-1084091C4050}">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)Microsoft.Rest.ClientRuntime.dll" KeyPath="yes" />
 			</Component>
@@ -150,11 +155,23 @@
 			<Component Id="AutoUpdater.NET" Guid="*">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)AutoUpdater.NET.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="redmon32pdfscribedll" Guid="{2211D250-F478-4FE2-BA82-E3F5F01E4880}">
+			<?if $(var.Platform) = x64 ?>
+			<Component Id="redmon64pdfscribedll" Guid="{E5B5533F-33FE-4187-84F7-21BDBF7AEF1A}" Win64="yes">
+		
+				<File Source="..\Lib\redmon64pdfscribe.dll" KeyPath="yes" />
+			</Component>
+			<?else ?>
+			<Component Id="redmon32pdfscribedll" Guid="{2211D250-F478-4FE2-BA82-E3F5F01E4880}" Win64="no">
+					
 				<File Source="..\Lib\redmon32pdfscribe.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="redmon64pdfscribedll" Guid="{E5B5533F-33FE-4187-84F7-21BDBF7AEF1A}">
-				<File Source="..\Lib\redmon64pdfscribe.dll" KeyPath="yes" />
+			<?endif ?>
+			<Component Id="gsdll64dll" Guid="{96C2E5A1-15AD-4B27-A184-7AC1C2F08409}">
+				<File Source="..\Lib\gsdll64.dll" KeyPath="yes" />
+			</Component>
+			<Component Id="gsdll32dll" Guid="{37A9E92F-3123-42E5-AE9A-3F8E62B22EBE}">
+			
+				<File Source="..\Lib\gsdll32.dll" KeyPath="yes" />
 			</Component>
 			<Component Id="PS5UIDLL" Guid="{EA4D173A-D1AC-46FC-93CF-CCBB13CF62A6}">
 				<File Source="..\Lib\PS5UI.DLL" KeyPath="yes" />
