@@ -105,10 +105,6 @@
     <Reference Include="AutoUpdater.NET, Version=1.6.4.0, Culture=neutral, PublicKeyToken=501435c91b35f4bc, processorArchitecture=MSIL">
       <HintPath>..\packages\Autoupdater.NET.Official.1.6.4\lib\net45\AutoUpdater.NET.dll</HintPath>
     </Reference>
-    <Reference Include="DotNet Common Library, Version=4.5.0.5, Culture=neutral, PublicKeyToken=fa81e3c46e3914cc">
-      <HintPath>..\packages\DotNetCommonLibrary.4.5.0.5\lib\net40-Client\DotNet Common Library.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="DotNetProjects.SVGImage, Version=4.1.92.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetProjects.SVGImage.4.1.92\lib\net46\DotNetProjects.SVGImage.dll</HintPath>
     </Reference>
@@ -313,10 +309,10 @@
       <Link>GhostScript\gsdll64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-	<Content Include="..\Lib\x86\gsdll32.dll">
-		<Link>GhostScript\gsdll32.dll</Link>
-		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	</Content>
+    <Content Include="..\Lib\x86\gsdll32.dll">
+      <Link>GhostScript\gsdll32.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Resources\faxdrucker.ico" />
     <Resource Include="Resources\fax-icon.svg" />
     <Resource Include="Resources\icon-external-link.svg" />

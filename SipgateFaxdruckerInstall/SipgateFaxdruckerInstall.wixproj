@@ -95,7 +95,7 @@
 	<Target Name="BeforeBuild">
 	</Target>-->
   <Target Name="ReadVersion">
-    <GetAssemblyIdentity AssemblyFiles="..\SipgateFaxdrucker\bin\$(Configuration)\SipgateFaxdrucker.exe">
+    <GetAssemblyIdentity AssemblyFiles="..\SipgateFaxdrucker\bin\$(Platform)\$(Configuration)\SipgateFaxdrucker.exe">
       <Output TaskParameter="Assemblies" ItemName="MyAssemblyIdentities" />
     </GetAssemblyIdentity>
     <Message Text="AssemblyVersion = %(MyAssemblyIdentities.Version)" />

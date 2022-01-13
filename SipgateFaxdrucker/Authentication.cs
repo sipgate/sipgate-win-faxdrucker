@@ -278,7 +278,7 @@ namespace SipgateFaxdrucker
                         using (StreamReader reader = new StreamReader(responseStream))
                         {
                             string responseText = await reader.ReadToEndAsync();
-                            throw new Exception(responseText);
+                            throw new AuthorizationException(responseText);
                         }
                     }
                 }

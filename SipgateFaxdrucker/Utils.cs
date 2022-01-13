@@ -108,6 +108,8 @@ namespace SipgateFaxdrucker
                 bytes = memoryStream.ToArray();
             }
 
+            outputFile.Close();
+
             return Convert.ToBase64String(bytes);
         }
 

@@ -233,9 +233,9 @@ namespace SipgateFaxdrucker
             LogoutUser();
         }
 
-        private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            await LoginUser();
+            LoginUser();
         }
 
         private void BtnSend_Click(object sender, RoutedEventArgs e)
@@ -437,7 +437,7 @@ namespace SipgateFaxdrucker
             return true;
         }
 
-        private async void LogoutUser(string errorMessage = "")
+        private void LogoutUser(string errorMessage = "")
         {
             try
             {
@@ -484,7 +484,7 @@ namespace SipgateFaxdrucker
             ErrorText.Visibility = Visibility.Visible;
         }
 
-        private async Task LoginUser()
+        private void LoginUser()
         {
             var auth = new Authentication();
 
@@ -494,7 +494,6 @@ namespace SipgateFaxdrucker
             {
                 if (!_credentialManager.IsLoggedIn())
                 {
-
                     HttpListener httpListener = auth.CreateHttpCallbackListener();
                     if(httpListener != null)
                     {
@@ -710,9 +709,6 @@ namespace SipgateFaxdrucker
 
                 var sessionId = await _faxManager.SendFileWithSipgateApi(_selectedFaxlineId, GetApiClient());
 
-                File.Delete(_filename);
-                _filename = null;
-
                 if (sessionId != null)
                 {
                     TextSendStatus.Text = "Dokument erfolgreich übermittelt!";
@@ -747,6 +743,16 @@ namespace SipgateFaxdrucker
                 Utils.LogCritical($"Exception while sending: {exception.Message}", 500);
                 TextSendStatus.Text = "Übermittlung fehlgeschlagen. Bitte versuchen Sie es später erneut. (F500)";
                 ShowSendingFailedMessage();
+            }
+
+            try
+            {
+                File.Delete(_filename);
+                _filename = null;
+            }
+            catch (Exception exception)
+            {
+                Utils.LogCritical($"Exception while deleting: {exception.Message}");
             }
         }
 
