@@ -1013,6 +1013,8 @@ namespace SipgateFaxdrucker
             FaxView.Visibility = page == FormPage.TargetNumber ? Visibility.Visible : Visibility.Collapsed;
             StatusView.Visibility = page == FormPage.SendingStatus ? Visibility.Visible : Visibility.Collapsed;
 
+            faqLink.Visibility = page != FormPage.SendingStatus ? Visibility.Visible : Visibility.Collapsed;
+
             if (_mixpanel != null)
             {
                 if (page == FormPage.Login)
@@ -1243,6 +1245,28 @@ namespace SipgateFaxdrucker
         private void TargetNumberComboBox_OnGotFocus(object sender, RoutedEventArgs e)
         {
             TargetNumberComboBox.IsDropDownOpen = true;
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+
+        }
+
+ 
+
+        private void Hyperlink_MouseEnter(object sender, MouseEventArgs e)
+        {
+
+            Faqsvg.Visibility = Visibility.Collapsed;
+            FaqsvgActive.Visibility = Visibility.Visible ;
+        }
+
+        private void Hyperlink_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Faqsvg.Visibility = Visibility.Visible;
+            FaqsvgActive.Visibility = Visibility.Collapsed;
         }
     }
 }

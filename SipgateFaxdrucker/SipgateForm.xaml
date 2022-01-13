@@ -53,7 +53,7 @@
     </Window.Resources>
     <Grid x:Name="MainGrid" Margin="24">
         <StackPanel VerticalAlignment="Center">
-            <StackPanel x:Name="LoginView" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,10" IsVisibleChanged="LoginView_IsVisibleChanged">
+            <StackPanel x:Name="LoginView" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,10" IsVisibleChanged="LoginView_IsVisibleChanged" Visibility="Visible">
                 <svgc:SvgViewbox Margin="0,0,0,30" Source="Resources/icon-lock.svg" Height="64" HorizontalAlignment="Center"/>
                 <TextBlock Margin="0,0,0,20" Text="Willkommen im sipgate Faxdrucker" FontSize="16" Foreground="#FF3C3C3C" HorizontalAlignment="Center"/>
                 <Button Background="{x:Null}" Padding="20,10,20,10" Margin="10,0,10,0"  Click="LoginButton_Click">
@@ -189,5 +189,18 @@
                 <Button Style="{StaticResource ConfirmButton}" Content="OK" Margin="10,0,10,10" x:Name="BtnClose" Visibility="Collapsed" Click="btnClose_Click"/>
             </StackPanel>
         </StackPanel>
+        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom" x:Name="faqLink" >           
+                <Hyperlink NavigateUri="https://teamhelp.sipgate.de/hc/de/articles/211585785" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="Hilfe" TextDecorations="{x:Null}"  MouseEnter="Hyperlink_MouseEnter" MouseLeave="Hyperlink_MouseLeave">
+                        <StackPanel >
+                             <svgc:SvgViewbox Name="Faqsvg" MessageText="hilfe" Source="Resources/faq.svg" Height="20" Width="20" HorizontalAlignment="Center">
+                            
+                            </svgc:SvgViewbox>
+                             <svgc:SvgViewbox Name="FaqsvgActive" MessageText="hilfe" Source="Resources/faq-active.svg" Height="20" Width="20" HorizontalAlignment="Center" Visibility="Collapsed">
+                            
+                            </svgc:SvgViewbox>
+                        </StackPanel>
+                         
+                </Hyperlink>
+        </TextBlock>
     </Grid>
 </Window>
