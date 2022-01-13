@@ -40,7 +40,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\x86\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -50,7 +50,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\x86\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -247,9 +247,7 @@
     <Compile Include="ErrorDialog.cs" />
     <Compile Include="GhostScript\GhostScript32.cs" />
     <Compile Include="GhostScript\GhostScript64.cs" />
-    <Compile Include="GhostScript\GhostScriptRunner.cs">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
+    <Compile Include="GhostScript\GhostScriptRunner.cs" />
     <Compile Include="GhostScript\NativeMethods32.cs" />
     <Compile Include="GhostScript\NativeMethods64.cs" />
     <Compile Include="FaxStatus.cs" />
@@ -311,18 +309,19 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\Lib\gsdll64.dll">
+    <Content Include="..\Lib\x64\gsdll64.dll">
       <Link>GhostScript\gsdll64.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+	<Content Include="..\Lib\x86\gsdll32.dll">
+		<Link>GhostScript\gsdll32.dll</Link>
+		<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	</Content>
     <Resource Include="Resources\faxdrucker.ico" />
     <Resource Include="Resources\fax-icon.svg" />
     <Resource Include="Resources\icon-external-link.svg" />
     <Resource Include="Resources\icon-lock.svg" />
     <Resource Include="Resources\search.svg" />
-    <Content Include="GhostScript\gsdll32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <EmbeddedResource Include="RedirectionPageFailure.html" />
     <Content Include="Resources\favicon.ico" />
     <EmbeddedResource Include="RedirectionPage.html" />
