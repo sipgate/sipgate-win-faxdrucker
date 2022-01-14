@@ -45,13 +45,19 @@
 
 		<!-- .Net 4.6.2 Prerequisite -->
 		<PropertyRef Id="WIX_IS_NETFRAMEWORK_462_OR_LATER_INSTALLED"/>
-		<Condition Message="This application requires .NET Framework 4.6.2. Please install the .NET Framework then run this installer again.">
+		<Condition Message="!(loc.ApplicationRequiresDotNet)">
 			<![CDATA[Installed OR WIX_IS_NETFRAMEWORK_462_OR_LATER_INSTALLED]]>
 		</Condition>
 		<!-- OS version prerequisite -->
-		<Condition Message="Windows 7, Server 2008 SP2, or later are required.">
+		<Condition Message="!(loc.ApplicationRequiresSpecificOS)">
 			<![CDATA[Installed OR (VersionNT >= 601)]]>
 		</Condition>
+		<!-- OS architecture prerequisite  -->
+		<?if $(var.Platform) = x86 ?>
+		<Condition Message="!(loc.ApplicationRequiresSpecificArch)">
+			<![CDATA[Not VersionNT64]]>
+		</Condition>
+		<?endif?>
 
 		<!-- Check if the user has administrator privileges -->
 		<Property Id="MSIUSEREALADMINDETECTION" Value="1" />
