@@ -106,5 +106,17 @@ namespace SipgateFaxdrucker.Properties {
                 this["MixpanelTokenDebug"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://sipgate-faxdrucker.s3.eu-central-1.amazonaws.com/version32.xml")]
+        public string UpdateCheckUrl32 {
+            get {
+                return ((string)(this["UpdateCheckUrl32"]));
+            }
+            set {
+                this["UpdateCheckUrl32"] = value;
+            }
+        }
     }
 }

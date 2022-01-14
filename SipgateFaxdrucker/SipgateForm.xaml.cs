@@ -181,7 +181,13 @@ namespace SipgateFaxdrucker
             {
                 Utils.LogCritical("Open Update Window");
                 AutoUpdater.OpenDownloadPage = true;
-                AutoUpdater.Start(Settings.Default.UpdateCheckUrl);
+                if(Environment.Is64BitProcess)
+                {
+                    AutoUpdater.Start(Settings.Default.UpdateCheckUrl);
+                } else
+                {
+                    AutoUpdater.Start(Settings.Default.UpdateCheckUrl32);
+                }
             }
             catch (Exception uex)
             {
