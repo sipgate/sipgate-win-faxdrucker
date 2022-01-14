@@ -175,7 +175,7 @@
                 <TextBlock x:Name="BalanceErrorText" Text="error" Foreground="#c90c2f" FontSize="11" 
                            Margin="0,2,0,0" Visibility="Hidden"/>
 
-                <Button Margin="0,24,0,0" HorizontalAlignment="Center" Cursor="Hand" Background="Transparent" BorderThickness="0" Click="LogoutButton_Click">
+                <Button Margin="0,24,0,0" HorizontalAlignment="Center" Cursor="Hand" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Click="LogoutButton_Click">
                     <TextBlock TextDecorations="Underline" Foreground="#FF3C3C3C">Ausloggen</TextBlock>
                 </Button>
             </StackPanel>
