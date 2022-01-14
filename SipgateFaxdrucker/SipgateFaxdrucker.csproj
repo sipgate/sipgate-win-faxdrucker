@@ -318,9 +318,7 @@
     <Resource Include="Resources\icon-external-link.svg" />
     <Resource Include="Resources\icon-lock.svg" />
     <Resource Include="Resources\search.svg" />
-    <Resource Include="Resources\faq.svg" />
     <EmbeddedResource Include="RedirectionPageFailure.html" />
-    <Resource Include="Resources\faq-active.svg" />
     <Content Include="Resources\favicon.ico" />
     <EmbeddedResource Include="RedirectionPage.html" />
   </ItemGroup>

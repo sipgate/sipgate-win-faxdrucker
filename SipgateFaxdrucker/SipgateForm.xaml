@@ -51,8 +51,8 @@
         <converter:BooleanToInvertedVisibilityConverter x:Key="BoolToInvertedVisibility" />
         <converter:BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     </Window.Resources>
-    <Grid x:Name="MainGrid" Margin="24">
-        <StackPanel VerticalAlignment="Center">
+    <Grid x:Name="MainGrid" Margin="6">
+        <StackPanel VerticalAlignment="Center" Margin="18">
             <StackPanel x:Name="LoginView" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,10" IsVisibleChanged="LoginView_IsVisibleChanged" Visibility="Visible">
                 <svgc:SvgViewbox Margin="0,0,0,30" Source="Resources/icon-lock.svg" Height="64" HorizontalAlignment="Center"/>
                 <TextBlock Margin="0,0,0,20" Text="Willkommen im sipgate Faxdrucker" FontSize="16" Foreground="#FF3C3C3C" HorizontalAlignment="Center"/>
@@ -189,18 +189,11 @@
                 <Button Style="{StaticResource ConfirmButton}" Content="OK" Margin="10,0,10,10" x:Name="BtnClose" Visibility="Collapsed" Click="btnClose_Click"/>
             </StackPanel>
         </StackPanel>
-        <TextBlock HorizontalAlignment="Right" VerticalAlignment="Bottom" x:Name="faqLink" >           
-                <Hyperlink NavigateUri="https://teamhelp.sipgate.de/hc/de/articles/211585785" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="Hilfe" TextDecorations="{x:Null}"  MouseEnter="Hyperlink_MouseEnter" MouseLeave="Hyperlink_MouseLeave">
-                        <StackPanel >
-                             <svgc:SvgViewbox Name="Faqsvg" MessageText="hilfe" Source="Resources/faq.svg" Height="20" Width="20" HorizontalAlignment="Center">
-                            
-                            </svgc:SvgViewbox>
-                             <svgc:SvgViewbox Name="FaqsvgActive" MessageText="hilfe" Source="Resources/faq-active.svg" Height="20" Width="20" HorizontalAlignment="Center" Visibility="Collapsed">
-                            
-                            </svgc:SvgViewbox>
-                        </StackPanel>
-                         
-                </Hyperlink>
+        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Hyperlink NavigateUri="http://sipg.at/faxdrucker-faq" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="Hilfe" TextDecorations="{x:Null}"  >
+                Hilfe
+            </Hyperlink>
         </TextBlock>
     </Grid>
+
 </Window>

@@ -1019,7 +1019,6 @@ namespace SipgateFaxdrucker
             FaxView.Visibility = page == FormPage.TargetNumber ? Visibility.Visible : Visibility.Collapsed;
             StatusView.Visibility = page == FormPage.SendingStatus ? Visibility.Visible : Visibility.Collapsed;
 
-            faqLink.Visibility = page != FormPage.SendingStatus ? Visibility.Visible : Visibility.Collapsed;
 
             if (_mixpanel != null)
             {
@@ -1262,17 +1261,6 @@ namespace SipgateFaxdrucker
 
  
 
-        private void Hyperlink_MouseEnter(object sender, MouseEventArgs e)
-        {
-
-            Faqsvg.Visibility = Visibility.Collapsed;
-            FaqsvgActive.Visibility = Visibility.Visible ;
-        }
-
-        private void Hyperlink_MouseLeave(object sender, MouseEventArgs e)
-        {
-            Faqsvg.Visibility = Visibility.Visible;
-            FaqsvgActive.Visibility = Visibility.Collapsed;
-        }
+   
     }
 }
