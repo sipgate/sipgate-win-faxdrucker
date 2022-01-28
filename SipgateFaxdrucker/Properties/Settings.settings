@@ -26,5 +26,8 @@
     <Setting Name="MixpanelTokenDebug" Type="System.String" Scope="User">
       <Value Profile="(Default)">5e2eedfb2db9a53766edab1380f6017e</Value>
     </Setting>
+    <Setting Name="UpdateCheckUrl32" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://sipgate-faxdrucker.s3.eu-central-1.amazonaws.com/version32.xml</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

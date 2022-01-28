@@ -19,8 +19,10 @@ namespace SipgateFaxdrucker
         private readonly string _clientId = Settings.Default.ClientId;
 #if DEBUG
         private static string _keycloakBaseUrl = "https://login.dev.sipgate.com";
+        private static string _appWebBaseUrl = "https://app.dev.sipgate.com";
 #else
         private static string _keycloakBaseUrl = Settings.Default.LoginBaseUrl;
+        private static string _appWebBaseUrl = "https://app.sipgate.com";
 #endif
 
         private readonly string _tokenUrl = _keycloakBaseUrl +
@@ -33,10 +35,10 @@ namespace SipgateFaxdrucker
             @"/auth/realms/sipgate-apps/protocol/openid-connect/logout";
 
         private const string GrantType = "authorization_code";
-        private readonly string _state = RandomDataBase64Url(32);
         private const string ResponseType = "code";
-        public readonly string redirectUri;
         private const string Scope = "faxlines:read sessions:fax:write history:read groups:faxlines:read offline_access contacts:read balance:read";
+        private readonly string _state = RandomDataBase64Url(32);
+        private string redirectUri;
 
         private static int GetRandomUnusedPort()
         {
@@ -52,12 +54,32 @@ namespace SipgateFaxdrucker
             redirectUri = $"http://{IPAddress.Loopback}:{GetRandomUnusedPort()}/";
         }
 
-        public HttpListener CreateLoginBrowserWindow()
+        public void enableRedirectFallback()
+        {
+            redirectUri = $"{_appWebBaseUrl}/faxdrucker-login";
+        }
+
+        public HttpListener CreateHttpCallbackListener()
         {
             // Creates an HttpListener to listen for requests on that redirect URI.
-            var http = new HttpListener();
-            http.Prefixes.Add(redirectUri);
-            http.Start();
+            HttpListener http = null;
+            try
+            {
+                http = new HttpListener();
+                http.Prefixes.Add(redirectUri);
+                http.Start();
+            }
+            catch (HttpListenerException e)
+            {
+                return null;
+            }
+
+            return http;
+        }
+
+        public void CreateLoginBrowserWindow()
+        {
+            Utils.LogInformation($"Redirect uri: {redirectUri}");
 
             // Creates the OAuth 2.0 authorization request.
             NameValueCollection queryString = System.Web.HttpUtility.ParseQueryString(string.Empty);
@@ -68,8 +90,6 @@ namespace SipgateFaxdrucker
             queryString.Add("scope", Scope);
 
             System.Diagnostics.Process.Start(_loginUrl + "?" + queryString);
-
-            return http;
         }
 
         public void SendHttpResponse(HttpListenerContext context, bool success)
@@ -229,7 +249,9 @@ namespace SipgateFaxdrucker
         public async Task<SipgateCredentials> PerformCodeExchange(string code)
         {
             HttpWebRequest tokenRequest = (HttpWebRequest)WebRequest.Create(_tokenUrl);
-
+#if DEBUG
+            tokenRequest.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+#endif
             try
             {
                 SipgateCredentials sipgateCredentials = await ProcessCodeResponse(await PrepareCodeExchangeRequest(tokenRequest, code));
@@ -256,7 +278,7 @@ namespace SipgateFaxdrucker
                         using (StreamReader reader = new StreamReader(responseStream))
                         {
                             string responseText = await reader.ReadToEndAsync();
-                            throw new Exception(responseText);
+                            throw new AuthorizationException(responseText);
                         }
                     }
                 }
@@ -275,6 +297,8 @@ namespace SipgateFaxdrucker
 
         private async Task<HttpWebRequest> PrepareCodeExchangeRequest(HttpWebRequest tokenRequest, string code)
         {
+
+
             NameValueCollection tokenRequestBody = System.Web.HttpUtility.ParseQueryString(string.Empty);
             tokenRequestBody.Add("code", code);
             tokenRequestBody.Add("client_id", _clientId);
@@ -284,7 +308,9 @@ namespace SipgateFaxdrucker
 
             byte[] byteVersion = Encoding.ASCII.GetBytes($"{tokenRequestBody}");
 
+#if DEBUG
             tokenRequest.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
+#endif
             tokenRequest.Method = "POST";
             tokenRequest.ContentType = "application/x-www-form-urlencoded";
             tokenRequest.Accept = "application/json";

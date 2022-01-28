@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <WixLocalization Culture="de-DE" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+	<String Id="ApplicationRequiresDotNet">Diese Anwendung erfordert .NET Framework 4.6.2. Bitte installieren Sie das .NET Framework und führen Sie dieses Installationsprogramm erneut aus.</String>
+	<String Id="ApplicationRequiresSpecificOS">Diese Anwendung ist nur auf Windows 7, Server 2008 SP2, oder neueren Betriebssystemen lauffähig.</String>
+	<String Id="ApplicationRequiresSpecificArch">Das vorliegende Installationspaket ist nicht für Ihre Plattform vorgesehen. Bitte laden Sie die richtige Version für 32bit oder 64bit herunter.</String>
 	<String Id="NewVersionAlreadyInstalled">Eine neuere Version von [ProductName] ist bereits installiert.</String>
+	
 	<String Id="WelcomeDlgDescription" >[ProductName] [ProductVersion] wird installiert. Klicken Sie auf Weiter, um fortzufahren, oder auf Abbrechen, um zu beenden.</String>
 	<String Id="WelcomeUpdateDlgDescriptionUpdate" Overridable="yes">[ProductName] wird auf [ProductVersion] aktualisiert. Klicken Sie auf Weiter, um fortzufahren, oder auf Abbrechen, um den Vorgang zu beenden</String>
 	<String Id="WelcomeDlgTitle" Overridable="yes">{\WixUI_Font_Bigger}[ProductName] [ProductVersion] Installation</String>

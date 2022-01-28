@@ -96,12 +96,8 @@ namespace SipgateFaxdrucker
 
         public void RemoveCredentials()
         {
-            string directory = GetConfigPath();
-            if (File.Exists(directory))
-            {
-                File.Delete(directory);
-            }
-            _credentials = null;
+            _credentials = new SipgateCredentials("", "");
+            SaveCredentials();
         }
 
         public SipgateCredentials GetCredentials()
@@ -133,7 +129,8 @@ namespace SipgateFaxdrucker
 
         public bool IsLoggedIn()
         {
-            return GetCredentials() != null && GetCredentials().AccessToken != "";
+            var creds = GetCredentials();
+            return creds != null && creds.AccessToken != "" && creds.RefreshToken != "";
         }
     }
 }

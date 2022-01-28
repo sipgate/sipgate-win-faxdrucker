@@ -51,9 +51,9 @@
         <converter:BooleanToInvertedVisibilityConverter x:Key="BoolToInvertedVisibility" />
         <converter:BooleanToVisibilityConverter x:Key="BoolToVisibility" />
     </Window.Resources>
-    <Grid x:Name="MainGrid" Margin="24">
-        <StackPanel VerticalAlignment="Center">
-            <StackPanel x:Name="LoginView" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,10" IsVisibleChanged="LoginView_IsVisibleChanged">
+    <Grid x:Name="MainGrid" Margin="6">
+        <StackPanel VerticalAlignment="Center" Margin="18">
+            <StackPanel x:Name="LoginView" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,10" IsVisibleChanged="LoginView_IsVisibleChanged" Visibility="Visible">
                 <svgc:SvgViewbox Margin="0,0,0,30" Source="Resources/icon-lock.svg" Height="64" HorizontalAlignment="Center"/>
                 <TextBlock Margin="0,0,0,20" Text="Willkommen im sipgate Faxdrucker" FontSize="16" Foreground="#FF3C3C3C" HorizontalAlignment="Center"/>
                 <Button Background="{x:Null}" Padding="20,10,20,10" Margin="10,0,10,0"  Click="LoginButton_Click">
@@ -63,6 +63,25 @@
                     </StackPanel>
                 </Button>
                 <TextBlock x:Name="ErrorText" MaxWidth="240" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,8,0,0" Visibility="Hidden" TextWrapping="Wrap">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Foreground" Value="#c90c2f"></Setter>
+                        </Style>
+                    </TextBlock.Style>
+                    Error
+                </TextBlock>
+            </StackPanel>
+            <StackPanel x:Name="LoginPerCodeView" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="10,10,10,10" IsVisibleChanged="LoginPerCodeView_IsVisibleChanged" Visibility="Collapsed">
+                <svgc:SvgViewbox Margin="0,0,0,30" Source="Resources/icon-lock.svg" Height="64" HorizontalAlignment="Center"/>
+                <TextBlock Margin="0,0,0,20" Text="Bitte geben Sie hier den im Browser angezeigten Code ein:" FontSize="16" Foreground="#FF3C3C3C" HorizontalAlignment="Center" TextWrapping="Wrap"/>
+                <TextBlock Foreground="#FF1086FC" FontSize="12" Margin="0,0,0,8" >Login Code</TextBlock>
+                <TextBox x:Name="LoginCode" Background="{x:Null}" FontSize="16"  Margin="0,0,0,20" BorderBrush="#FF3C3C3C" MaxWidth="240" BorderThickness="0 0 0 1" />
+                <Button Style="{StaticResource ConfirmButton}" Click="LoginPerCodeButton_Click" Margin="10,0,10,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock  FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center">Einloggen</TextBlock>
+                    </StackPanel>
+                </Button>
+                <TextBlock x:Name="ErrorCodeText" MaxWidth="240" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,8,0,0" Visibility="Hidden" TextWrapping="Wrap">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Foreground" Value="#c90c2f"></Setter>
@@ -156,7 +175,7 @@
                 <TextBlock x:Name="BalanceErrorText" Text="error" Foreground="#c90c2f" FontSize="11" 
                            Margin="0,2,0,0" Visibility="Hidden"/>
 
-                <Button Margin="0,24,0,0" HorizontalAlignment="Center" Cursor="Hand" Background="Transparent" BorderThickness="0" Click="LogoutButton_Click">
+                <Button Margin="0,24,0,0" HorizontalAlignment="Center" Cursor="Hand" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Click="LogoutButton_Click">
                     <TextBlock TextDecorations="Underline" Foreground="#FF3C3C3C">Ausloggen</TextBlock>
                 </Button>
             </StackPanel>
@@ -170,5 +189,11 @@
                 <Button Style="{StaticResource ConfirmButton}" Content="OK" Margin="10,0,10,10" x:Name="BtnClose" Visibility="Collapsed" Click="btnClose_Click"/>
             </StackPanel>
         </StackPanel>
+        <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right">
+            <Hyperlink NavigateUri="http://sipg.at/faxdrucker-faq" RequestNavigate="Hyperlink_RequestNavigate" ToolTip="Hilfe" TextDecorations="{x:Null}"  >
+                Hilfe
+            </Hyperlink>
+        </TextBlock>
     </Grid>
+
 </Window>

@@ -10,7 +10,7 @@
 *% PCFileName should be of the form XXNNNNNN.PPD where XX is an assigned
 *% manufacturer code.
 *PCFileName: "SCPDFPRN.PPD"
-*Product: "(PDF Scribe)"
+*Product: "(sipgate Faxdrucker)"
 *PSVersion: "(3010) 815"
 
 *% *DefaultImageableArea:
@@ -24,7 +24,7 @@
 
 *% == Above are required
 
-*% This file was adapted from GHOSTPDF.PPD for PDF Scribe
+*% This file was adapted from GHOSTPDF.PPD for sipgate Faxdrucker
 
 *Copyright: "2004-2006 Ghostgum Software Pty Ltd"
 *%
@@ -55,7 +55,7 @@
 
 *% == Basic Capabilities
 *LanguageLevel: "3"
-*ColorDevice: True
+*ColorDevice: False
 *DefaultColorSpace: RGB
 *FileSystem: True
 *Extensions: CMYK FileSystem Composite

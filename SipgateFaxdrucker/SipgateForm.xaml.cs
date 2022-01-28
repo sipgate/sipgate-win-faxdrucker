@@ -35,7 +35,8 @@ namespace SipgateFaxdrucker
         {
             Login,
             TargetNumber,
-            SendingStatus
+            SendingStatus,
+            LoginPerCode
         }
         private const int MaxContactsSupported = 1000;
         private const double FaxCostsInCent = 1.79;
@@ -62,7 +63,6 @@ namespace SipgateFaxdrucker
 #endif
 
         private Mixpanel _mixpanel;
-        private UserinfoResponse _userinfo;
 
         readonly ObservableCollection<Contact> _contactsCollection = new ObservableCollection<Contact>();
         readonly ObservableCollection<Contact> _filteredContactsCollection = new ObservableCollection<Contact>();
@@ -181,7 +181,13 @@ namespace SipgateFaxdrucker
             {
                 Utils.LogCritical("Open Update Window");
                 AutoUpdater.OpenDownloadPage = true;
-                AutoUpdater.Start(Settings.Default.UpdateCheckUrl);
+                if(Environment.Is64BitProcess)
+                {
+                    AutoUpdater.Start(Settings.Default.UpdateCheckUrl);
+                } else
+                {
+                    AutoUpdater.Start(Settings.Default.UpdateCheckUrl32);
+                }
             }
             catch (Exception uex)
             {
@@ -204,16 +210,19 @@ namespace SipgateFaxdrucker
                     }
                 }
 
-                bool successfullyRefreshed = await RefreshToken();
-                if (!successfullyRefreshed)
+                if(_credentialManager.IsLoggedIn())
                 {
-                    Utils.LogWarning("Refreshing token failed");
-                    LogoutUser();
-                }
-                else
-                {
-                    Utils.LogInformation("RefreshToken: \n" + _credentialManager.GetCredentials().RefreshToken);
-                    ShowPage(FormPage.TargetNumber);
+                    bool successfullyRefreshed = await RefreshToken();
+                    if (!successfullyRefreshed)
+                    {
+                        Utils.LogWarning("Refreshing token failed");
+                        LogoutUser("Zugangsdaten abgelaufen, bitte loggen Sie sich wieder ein");
+                    }
+                    else
+                    {
+                        Utils.LogInformation("RefreshToken: \n" + _credentialManager.GetCredentials().RefreshToken);
+                        ShowPage(FormPage.TargetNumber);
+                    }
                 }
 
             }
@@ -226,12 +235,13 @@ namespace SipgateFaxdrucker
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            LogoutUser(true);
+            LogoutInKeycloak();
+            LogoutUser();
         }
 
-        private async void LoginButton_Click(object sender, RoutedEventArgs e)
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            await LoginUser();
+            LoginUser();
         }
 
         private void BtnSend_Click(object sender, RoutedEventArgs e)
@@ -291,6 +301,12 @@ namespace SipgateFaxdrucker
             ErrorText.Visibility = Visibility.Hidden;
         }
 
+        private void LoginPerCodeView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            ErrorCodeText.Visibility = Visibility.Hidden;
+            ErrorCodeText.Text = "";
+        }
+
         private async void FaxView_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
 
@@ -304,52 +320,12 @@ namespace SipgateFaxdrucker
 
                 try
                 {
-                    _userinfo = await apiClient.UserinfoAsync();
-                    if (_userinfo != null)
-                    {
-                        Utils.LogInformation($"API: Got user info: {_userinfo.Sub} {_userinfo.Sub}");
-                    }
-                    else
-                    {
-                        Utils.LogCritical("API: userinfo came back empty. Exiting");
-                        LogoutUser(false, "Es gab eine fehlerhafte Antwort vom Server.");
-                        return;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Utils.LogCritical($"Encountered error while initializing FaxView: {ex.Message} ({ex.StackTrace})");
-                    return;
-                }
-
-                try
-                {
                     InitContacts(apiClient);
-
                 }
                 catch (Exception ex)
                 {
                     Utils.LogCritical($"Encountered error while initializing contacts {ex.Message} ({ex.StackTrace})");
-                    LogoutUser(false, "Beim Laden der Kontakte ist ein Fehler aufgetreten.");
-                    return;
                 }
-
-                try
-                {
-                    Utils.LogInformation("Initializing Mixpanel");
-
-                    _mixpanel = new Mixpanel(_userinfo);
-
-                    var success = await _mixpanel.TrackPageView("/FaxView");
-                    Utils.LogInformation(success
-                        ? "Mixpanel: successfully send page view event."
-                        : "Mixpanel: failed to send page view event.");
-                }
-                catch (Exception ex)
-                {
-                    Utils.LogCritical($"Mixpanel: {ex.Message}");
-                }
-
 
                 try
                 {
@@ -372,16 +348,14 @@ namespace SipgateFaxdrucker
                         Utils.LogInformation($"API: Done fetching account balance: {balanceResponse.Amount}{balanceResponse.Currency}");
 
                         var balanceInCent = (double)balanceResponse.Amount.Value / 100;
-                        if (!(balanceInCent < FaxCostsInCent) || balanceResponse.Currency != "EUR")
+                        if (balanceInCent < FaxCostsInCent && balanceResponse.Currency == "EUR")
                         {
-                            return;
+                            Utils.LogError($"Not enough money! {balanceInCent}ct");
+                            CheckShouldEnable(null, null, false);
+
+                            BalanceErrorText.Text = $"Ihr Guthaben reicht nicht aus (min. {FaxCostsInCent}ct).";
+                            BalanceErrorText.Visibility = Visibility.Visible;
                         }
-
-                        Utils.LogError($"Not enough money! {balanceInCent}ct");
-                        CheckShouldEnable(null, null, false);
-
-                        BalanceErrorText.Text = $"Ihr Guthaben reicht nicht aus (min. {FaxCostsInCent}ct).";
-                        BalanceErrorText.Visibility = Visibility.Visible;
                     }
                 }
                 catch (NoRightsToFetchBalanceException nex)
@@ -391,6 +365,38 @@ namespace SipgateFaxdrucker
                 catch (Exception ex)
                 {
                     Utils.LogCritical($"Error while fetching balance: {ex.Message} {ex.StackTrace}");
+                }
+
+                try
+                {
+                    UserinfoResponse _userinfo = await apiClient.UserinfoAsync();
+                    if (_userinfo != null)
+                    {
+                        Utils.LogInformation($"API: Got user info: {_userinfo.Sub} {_userinfo.Sub}");
+                        try
+                        {
+                            Utils.LogInformation("Initializing Mixpanel");
+
+                            _mixpanel = new Mixpanel(_userinfo);
+
+                            var success = await _mixpanel.TrackPageView("/FaxView");
+                            Utils.LogInformation(success
+                                ? "Mixpanel: successfully send page view event."
+                                : "Mixpanel: failed to send page view event.");
+                        }
+                        catch (Exception ex)
+                        {
+                            Utils.LogCritical($"Mixpanel: {ex.Message}");
+                        }
+                    }
+                    else
+                    {
+                        Utils.LogCritical("API: userinfo came back empty. Exiting");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Utils.LogCritical($"Encountered error while initializing FaxView: {ex.Message} ({ex.StackTrace})");
                 }
 
             }
@@ -437,20 +443,8 @@ namespace SipgateFaxdrucker
             return true;
         }
 
-        private async void LogoutUser(bool keycloakLogout = false, string errorMessage = "")
+        private void LogoutUser(string errorMessage = "")
         {
-
-
-            if (keycloakLogout && _credentialManager.IsLoggedIn())
-            {
-                var auth = new Authentication();
-                bool loggedOutSuccessfully = await auth.PerformLogout(_credentialManager.GetCredentials());
-                if (!loggedOutSuccessfully)
-                {
-                    Utils.LogWarning("User not logged out properly");
-                }
-            }
-
             try
             {
                 FaxlinesDropdown.SelectedIndex = -1;
@@ -470,7 +464,19 @@ namespace SipgateFaxdrucker
             ShowPage(FormPage.Login);
 
             showErrorOnLoginView(errorMessage);
+        }
 
+        private async void LogoutInKeycloak()
+        {
+            if (_credentialManager.IsLoggedIn())
+            {
+                var auth = new Authentication();
+                bool loggedOutSuccessfully = await auth.PerformLogout(_credentialManager.GetCredentials());
+                if (!loggedOutSuccessfully)
+                {
+                    Utils.LogWarning("User not logged out properly");
+                }
+            }
         }
 
         private void showErrorOnLoginView(string errorMessage)
@@ -484,65 +490,77 @@ namespace SipgateFaxdrucker
             ErrorText.Visibility = Visibility.Visible;
         }
 
-        private async Task LoginUser()
+        private void LoginUser()
         {
             var auth = new Authentication();
-            HttpListenerContext context = null;
 
             ClearErrorMessage();
 
             try
             {
-                SipgateCredentials sipgateCredentials = _credentialManager.GetCredentials();
-                if (sipgateCredentials == null)
+                if (!_credentialManager.IsLoggedIn())
                 {
-
-                    Utils.LogInformation($"Redirect uri: {auth.redirectUri}");
-                    HttpListener httpListener = auth.CreateLoginBrowserWindow();
-                    Utils.LogInformation("Initialized http listener");
-                    context = await auth.AwaitResponse(httpListener);
-                    Utils.LogInformation("Created listener");
-                    Utils.LogInformation("About to send http response");
-
-                    Utils.LogInformation("Http response sent");
-
-                    Activate();
-                    string authCode = auth.ProcessResult(context);
-                    Utils.LogInformation($"Auth code retrieved:\n{authCode}");
-
-                    if (authCode != "")
+                    HttpListener httpListener = auth.CreateHttpCallbackListener();
+                    if(httpListener != null)
                     {
-                        sipgateCredentials = await auth.PerformCodeExchange(authCode);
+                        auth.CreateLoginBrowserWindow();
+                        Utils.LogInformation("Initialized http listener");
+                        ListenToLoginPerHttpListener(auth, httpListener);
+                    } else
+                    {
+                        auth.enableRedirectFallback();
+                        auth.CreateLoginBrowserWindow();
+                        Utils.LogInformation("Could not initialize http listener - fallback to manual mode");
+                        Activate();
+                        ShowPage(FormPage.LoginPerCode);
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                MessageBox.Show(exc.Message);
+                Utils.LogCritical($"Login error: {exc.Message}, {exc.GetType()}");
+            }
+        }
+
+        private async void ListenToLoginPerHttpListener(Authentication auth, HttpListener httpListener)
+        {
+            HttpListenerContext context = null;
+
+            context = await auth.AwaitResponse(httpListener);
+
+            Activate();
+
+            try
+            {
+                string authCode = auth.ProcessResult(context);
+                Utils.LogInformation($"Auth code retrieved:\n{authCode}");
+
+                if (authCode != "")
+                {
+                    var sipgateCredentials = await auth.PerformCodeExchange(authCode);
+                    if (sipgateCredentials == null)
+                    {
+                        auth.SendHttpResponse(context, false);
+                        MessageBox.Show("Authentifizierung nicht möglich.", "sipgate Faxdrucker Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                    }
+                    else
+                    {
                         _credentialManager.SaveCredentials(sipgateCredentials);
                         ShowPage(FormPage.TargetNumber);
                         var apiClient = GetApiClient();
 
                         await SetEligibleFaxlines(FaxlinesDropdown, apiClient);
                         Utils.LogInformation($"Token:\n{sipgateCredentials.AccessToken}");
+                        Utils.LogInformation("About to send success http response");
                         auth.SendHttpResponse(context, true);
                     }
-                    else
-                    {
-                        Utils.LogWarning("Login: no valid auth code to retrieve token with");
-                        auth.SendHttpResponse(context, false);
-                    }
-
-                    if (httpListener.IsListening)
-                    {
-                        DispatcherTimer timer = new DispatcherTimer
-                        {
-                            Interval = TimeSpan.FromSeconds(4)
-                        };
-
-                        timer.Tick += (sender, e) =>
-                        {
-                            httpListener.Stop();
-                        };
-                        timer.Start();
-                        timer.Stop();
-
-                        Utils.LogInformation("http Listener stopped");
-                    }
+                }
+                else
+                {
+                    Utils.LogWarning("Login: no valid auth code to retrieve token with");
+                    Utils.LogInformation("About to send failure http response");
+                    auth.SendHttpResponse(context, false);
                 }
             }
             catch (AuthorizationException authex)
@@ -555,12 +573,64 @@ namespace SipgateFaxdrucker
                     Utils.LogInformation("Sending Failure Page");
                     auth.SendHttpResponse(context, false);
                 }
-
             }
-            catch (Exception exc)
+
+            if (httpListener.IsListening)
             {
-                MessageBox.Show(exc.Message);
-                Utils.LogCritical($"Login error: {exc.Message}, {exc.GetType()}");
+                DispatcherTimer timer = new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(4)
+                };
+
+                timer.Tick += (sender, e) =>
+                {
+                    httpListener.Stop();
+                };
+                timer.Start();
+                timer.Stop();
+
+                Utils.LogInformation("http Listener stopped");
+            }
+        }
+
+        private async void LoginPerCodeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var auth = new Authentication();
+            auth.enableRedirectFallback();
+
+            var authCode = LoginCode.Text;
+            Utils.LogInformation($"Auth code retrieved:\n{authCode}");
+
+            try
+            {
+                if (authCode != "")
+                {
+                    var sipgateCredentials = await auth.PerformCodeExchange(authCode);
+                    if (sipgateCredentials == null)
+                    {
+                        MessageBox.Show("Authentifizierung nicht möglich.", "sipgate Faxdrucker Fehler", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+                    _credentialManager.SaveCredentials(sipgateCredentials);
+                    ShowPage(FormPage.TargetNumber);
+                    var apiClient = GetApiClient();
+
+                    await SetEligibleFaxlines(FaxlinesDropdown, apiClient);
+                    Utils.LogInformation($"Token:\n{sipgateCredentials.AccessToken}");
+                }
+                else
+                {
+                    Utils.LogWarning("Login: no valid auth code to retrieve token with");
+                    Utils.LogInformation("About to send failure http response");
+                    ErrorCodeText.Visibility = Visibility.Visible;
+                    ErrorCodeText.Text = "Bitte geben Sie einen Code ein";
+                }
+            }
+            catch (AuthorizationException authex)
+            {
+                Utils.LogCritical($"Error Authenticating: {authex.Message}");
+                ErrorCodeText.Visibility = Visibility.Visible;
+                ErrorCodeText.Text = "Ungültiger Code. Überprüfen Sie bitte Ihre Eingabe oder fordern Sie einen neuen Code im Browser an.";
             }
         }
 
@@ -618,14 +688,15 @@ namespace SipgateFaxdrucker
                 if (!await RefreshToken())
                 {
                     Utils.LogWarning("Error Refreshing Token before Sending fax: The Token was no longer valid");
-                    LogoutUser(false, "Fehler bei den Zugangsdaten, bitte loggen Sie sich wieder ein");
+                    LogoutUser("Fehler bei den Zugangsdaten, bitte loggen Sie sich wieder ein");
                     return;
                 }
             }
             catch (NoInternetConnectionException nex)
             {
                 Utils.LogCritical($"Could not refresh because loginserver could not be reached (e.g. no internet): {nex.Message}");
-                LogoutUser(false, "Bitte stellen Sie sicher, dass Sie eine Verbindung zum Internet haben.");
+                ShowPage(FormPage.TargetNumber);
+                MessageBox.Show("Bitte stellen Sie sicher, dass Sie eine Verbindung zum Internet haben und versuchen es nochmal.", "sipgate Faxdrucker Warnung", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return;
             }
 
@@ -679,6 +750,16 @@ namespace SipgateFaxdrucker
                 TextSendStatus.Text = "Übermittlung fehlgeschlagen. Bitte versuchen Sie es später erneut. (F500)";
                 ShowSendingFailedMessage();
             }
+
+            try
+            {
+                File.Delete(_filename);
+                _filename = null;
+            }
+            catch (Exception exception)
+            {
+                Utils.LogCritical($"Exception while deleting: {exception.Message}");
+            }
         }
 
         private void ShowSendingFailedMessage()
@@ -715,12 +796,18 @@ namespace SipgateFaxdrucker
 
             try
             {
+                if (!_credentialManager.IsLoggedIn())
+                {
+                    Utils.LogWarning("Could not refresh token due to missing credentials");
+                    return false;
+                }
+
                 var auth = new Authentication();
                 SipgateCredentials sipgateCredentials =
                     await auth.RefreshAccessToken(_credentialManager.GetCredentials().RefreshToken);
                 if (sipgateCredentials == null)
                 {
-                    Utils.LogWarning("Could not refresh token due to missing credentials");
+                    Utils.LogWarning("Could not refresh token");
                     return false;
                 }
 
@@ -923,16 +1010,15 @@ namespace SipgateFaxdrucker
         {
             if (_credentialManager == null || !_credentialManager.IsLoggedIn())
             {
-                LoginView.Visibility = Visibility.Visible;
-                FaxView.Visibility = Visibility.Collapsed;
-                StatusView.Visibility = Visibility.Collapsed;
+                page = page == FormPage.LoginPerCode ? FormPage.LoginPerCode : FormPage.Login;
                 Utils.LogInformation("not authorized. staying at login");
-                return;
             }
 
             LoginView.Visibility = page == FormPage.Login ? Visibility.Visible : Visibility.Collapsed;
+            LoginPerCodeView.Visibility = page == FormPage.LoginPerCode ? Visibility.Visible : Visibility.Collapsed;
             FaxView.Visibility = page == FormPage.TargetNumber ? Visibility.Visible : Visibility.Collapsed;
             StatusView.Visibility = page == FormPage.SendingStatus ? Visibility.Visible : Visibility.Collapsed;
+
 
             if (_mixpanel != null)
             {
@@ -940,6 +1026,12 @@ namespace SipgateFaxdrucker
                 {
                     Utils.LogInformation("Sending PageView Event to Mixpanel");
                     _ = _mixpanel.TrackPageView("/LoginView");
+
+                }
+                else if (page == FormPage.LoginPerCode)
+                {
+                    Utils.LogInformation("Sending PageView Event to Mixpanel");
+                    _ = _mixpanel.TrackPageView("/LoginPerCodeView");
 
                 }
                 else if (page == FormPage.SendingStatus)
@@ -1159,5 +1251,16 @@ namespace SipgateFaxdrucker
         {
             TargetNumberComboBox.IsDropDownOpen = true;
         }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
+
+        }
+
+ 
+
+   
     }
 }

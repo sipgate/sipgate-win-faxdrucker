@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?define ProductName = "sipgate Faxdrucker" ?>
 <?define ProductVersion="!(bind.fileVersion.SipgateFaxdruckerExe)" ?>
+<?define ProductAuthor = "sipgate GmbH" ?>
+
+<?if $(var.Platform) = x64 ?>
+	<?define Win64 = "yes" ?>
+	<?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?else ?>
+	<?define Win64 = "no" ?>
+	<?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?endif ?>
+
+<?if $(var.Platform) = x64 ?>
+	<?define ProductDisplayName = "$(var.ProductName) 64-bit" ?>
+	<?define ProductId = "A1284302-8E16-4CF2-9632-1EB22EA9C66F" ?>
+	<?define ProductUpgradeCode = "409ff0d1-1c3a-4f8d-8a5a-350705977809" ?>
+	<?define Win64 = "yes" ?>
+	<?define PlatformProgramFilesFolder = "ProgramFiles64Folder" ?>
+<?else ?>
+	<?define ProductDisplayName = "$(var.ProductName) 32-bit" ?>
+	<?define ProductId = "14520D2F-DD9A-411E-BF97-33F26BAF4768" ?>
+	<?define ProductUpgradeCode = "69E0BDAA-2367-438E-AFF1-193CF85C9645" ?>
+	<?define Win64 = "no" ?>
+	<?define PlatformProgramFilesFolder = "ProgramFilesFolder" ?>
+<?endif ?>
+
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"  xmlns:netfx ="http://schemas.microsoft.com/wix/NetFxExtension">
-	<Product Id="*" Name="sipgate Faxdrucker" Language="1033" Version="$(var.ProductVersion)" Manufacturer="sipgate GmbH" UpgradeCode="409ff0d1-1c3a-4f8d-8a5a-350705977809">
+	<Product Id="$(var.ProductId)" Name="$(var.ProductDisplayName) (v$(var.ProductVersion))" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.ProductAuthor)" UpgradeCode="$(var.ProductUpgradeCode)">
 		<Package InstallerVersion="408" Compressed="yes" InstallScope="perMachine"
              InstallPrivileges="elevated"
-             Description="sipgate Faxdrucker" 
-             Comments="sipgate Faxdrucker $(var.ProductVersion) Installationspaket"
+             Description="$(var.ProductDisplayName)" 
+             Comments="$(var.ProductDisplayName) (v$(var.ProductVersion)) Installationspaket"
              Id="*" />
 
 		<MajorUpgrade DowngradeErrorMessage="!(loc.NewVersionAlreadyInstalled)"
@@ -18,18 +43,26 @@
 		</Feature>
 
 
-		<!-- .Net 4.6.1 Prerequisite -->
-		<PropertyRef Id="WIX_IS_NETFRAMEWORK_461_OR_LATER_INSTALLED"/>
-		<Condition Message="This application requires .NET Framework 4.6.1. Please install the .NET Framework then run this installer again.">
-			<![CDATA[Installed OR WIX_IS_NETFRAMEWORK_461_OR_LATER_INSTALLED]]>
+		<!-- .Net 4.6.2 Prerequisite -->
+		<PropertyRef Id="WIX_IS_NETFRAMEWORK_462_OR_LATER_INSTALLED"/>
+		<Condition Message="!(loc.ApplicationRequiresDotNet)">
+			<![CDATA[Installed OR WIX_IS_NETFRAMEWORK_462_OR_LATER_INSTALLED]]>
 		</Condition>
 		<!-- OS version prerequisite -->
-		<Condition Message="Windows 7, Server 2008 SP2, or later are required.">
+		<Condition Message="!(loc.ApplicationRequiresSpecificOS)">
 			<![CDATA[Installed OR (VersionNT >= 601)]]>
 		</Condition>
+		<!-- OS architecture prerequisite  -->
+		<?if $(var.Platform) = x86 ?>
+		<Condition Message="!(loc.ApplicationRequiresSpecificArch)">
+			<![CDATA[Not VersionNT64]]>
+		</Condition>
+		<?endif?>
 
 		<!-- Check if the user has administrator privileges -->
 		<Property Id="MSIUSEREALADMINDETECTION" Value="1" />
+
+		<Property Id="MsiLogging" Value="v" />
 
 		<!-- Custom Actions -->
 		<Binary Id="SipgateFaxdruckerInstallCustomAction.CA.dll" SourceFile="$(var.SipgateFaxdruckerInstallCustomAction.TargetDir)$(var.SipgateFaxdruckerInstallCustomAction.TargetName).CA.dll" />
@@ -65,110 +98,115 @@
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFiles64Folder">
+			<Directory Id="$(var.PlatformProgramFilesFolder)" >
+				<Directory Id="APPLICATIONFOLDER" Name="$(var.ProductName)"/>
 				<Directory Id="INSTALLFOLDER" Name="SipgateFaxdrucker" />
 			</Directory>
-		</Directory>
+		</Directory>		
 	</Fragment>
 
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<Component Id="SipgateFaxdruckerBase" Guid="{7A339C63-AEA3-491C-8CB1-C78D21426EC1}">
+			<Component Win64="$(var.Win64)" Id="SipgateFaxdruckerBase" Guid="{7A339C63-AEA3-491C-8CB1-C78D21426EC1}">
 				<File Id="SipgateFaxdruckerExe" Source="$(var.SipgateFaxdrucker.TargetPath)" KeyPath="yes" >
 					<netfx:NativeImage Id="$(var.SipgateFaxdrucker.TargetFileName)" Priority="1"   />
 				</File>
 			</Component>
-			<Component Id="SipgateFaxdruckerExePdb" Guid="{52D6263A-E94A-47F4-A289-DA128457A341}">
+			<Component Win64="$(var.Win64)" Id="SipgateFaxdruckerExePdb" Guid="{52D6263A-E94A-47F4-A289-DA128457A341}">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)$(var.SipgateFaxdrucker.TargetName).pdb" KeyPath="yes" />
 			</Component>
-			<Component Id="SipgateFaxdruckerExeConfig" Guid="{8665FD57-C8C8-46D2-9031-A1F826AB8FC0}">
+			<Component Win64="$(var.Win64)" Id="SipgateFaxdruckerExeConfig" Guid="{8665FD57-C8C8-46D2-9031-A1F826AB8FC0}">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)$(var.SipgateFaxdrucker.TargetFileName).config" KeyPath="yes" />
 			</Component>
-			<Component Id="SipgateFaxdruckerCoreDll" Guid="{4E776721-791F-47F4-A75C-186EA73640CE}">
+			<Component Win64="$(var.Win64)" Id="SipgateFaxdruckerCoreDll" Guid="{4E776721-791F-47F4-A75C-186EA73640CE}">
 				<File Source="$(var.SipgateFaxdruckerCore.TargetPath)" KeyPath="yes"  >
 					<netfx:NativeImage Id="$(var.SipgateFaxdruckerCore.TargetFileName)" Priority="1"   />
 				</File>
 			</Component>
-			<Component Id="SipgateFaxdruckerCoreDllPdb" Guid="{8979618A-C1B1-40B6-A400-D8DAF159184D}">
+			<Component Win64="$(var.Win64)" Id="SipgateFaxdruckerCoreDllPdb" Guid="{8979618A-C1B1-40B6-A400-D8DAF159184D}">
 				<File Source="$(var.SipgateFaxdruckerCore.TargetDir)$(var.SipgateFaxdruckerCore.TargetName).pdb" KeyPath="yes" />
 			</Component>
-			<!-- Third party components -->
-			<Component Id="gsdll64dll" Guid="{96C2E5A1-15AD-4B27-A184-7AC1C2F08409}">
-				<File Source="..\Lib\gsdll64.dll" KeyPath="yes" />
-			</Component>
-			<Component Id="gsdll32dll" Guid="{37A9E92F-3123-42E5-AE9A-3F8E62B22EBE}">
-				<File Source="..\Lib\gsdll32.dll" KeyPath="yes" />
-			</Component>
-			<Component Id="MicrosoftRestClientRuntime" Guid="{234FAFAA-FA7E-4307-87DF-1084091C4050}">
+			<!-- Third party components -->			
+		
+			<Component Win64="$(var.Win64)" Id="MicrosoftRestClientRuntime" Guid="{234FAFAA-FA7E-4307-87DF-1084091C4050}">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)Microsoft.Rest.ClientRuntime.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="Microsoft.IdentityModel.JsonWebTokens" Guid="{19889BE8-0948-482D-900C-4FF571A0414E}">
+			<Component Win64="$(var.Win64)" Id="Microsoft.IdentityModel.JsonWebTokens" Guid="{19889BE8-0948-482D-900C-4FF571A0414E}">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)Microsoft.IdentityModel.JsonWebTokens.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="Microsoft.IdentityModel.Logging" Guid="{7CDB360A-E8C0-4045-B0B2-DD77DAA90E55}">
+			<Component Win64="$(var.Win64)" Id="Microsoft.IdentityModel.Logging" Guid="{7CDB360A-E8C0-4045-B0B2-DD77DAA90E55}">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)Microsoft.IdentityModel.Logging.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="Microsoft.IdentityModel.Tokens" Guid="{20E12DBD-325A-4853-89F8-844FC30D551C}">
+			<Component Win64="$(var.Win64)" Id="Microsoft.IdentityModel.Tokens" Guid="{20E12DBD-325A-4853-89F8-844FC30D551C}">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)Microsoft.IdentityModel.Tokens.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="PhoneNumbers" Guid="{68D3D816-7821-4907-B3FF-DBE5CA3EAEBF}">
+			<Component Win64="$(var.Win64)" Id="PhoneNumbers" Guid="{68D3D816-7821-4907-B3FF-DBE5CA3EAEBF}">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)PhoneNumbers.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="System.IdentityModel.Tokens.Jwt" Guid="{EE05A75B-E4A6-4F8B-BF95-E61B31EF1D08}">
+			<Component Win64="$(var.Win64)" Id="System.IdentityModel.Tokens.Jwt" Guid="{EE05A75B-E4A6-4F8B-BF95-E61B31EF1D08}">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)System.IdentityModel.Tokens.Jwt.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="System.Net.Http" Guid="{DB2BC2B1-E8A4-4B6F-A1E7-C7D2A44351F6}">
+			<Component Win64="$(var.Win64)" Id="System.Net.Http" Guid="{DB2BC2B1-E8A4-4B6F-A1E7-C7D2A44351F6}">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)System.Net.Http.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="NewtonsoftJson" Guid="{7BC6372D-56AC-4E4E-B12B-5673401DB37C}">
+			<Component Win64="$(var.Win64)" Id="NewtonsoftJson" Guid="{7BC6372D-56AC-4E4E-B12B-5673401DB37C}">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)Newtonsoft.Json.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="Mixpanel" Guid="*">
+			<Component Win64="$(var.Win64)" Id="Mixpanel" Guid="*">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)Mixpanel.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="SharpVectors.Converters.Wpf" Guid="*">
+			<Component Win64="$(var.Win64)" Id="SharpVectors.Converters.Wpf" Guid="*">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)SharpVectors.Converters.Wpf.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="SharpVectors.Core" Guid="*">
+			<Component Win64="$(var.Win64)" Id="SharpVectors.Core" Guid="*">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)SharpVectors.Core.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="SharpVectors.Css" Guid="*">
+			<Component Win64="$(var.Win64)" Id="SharpVectors.Css" Guid="*">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)SharpVectors.Css.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="SharpVectors.Dom" Guid="*">
+			<Component Win64="$(var.Win64)" Id="SharpVectors.Dom" Guid="*">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)SharpVectors.Dom.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="SharpVectors.Model" Guid="*">
+			<Component Win64="$(var.Win64)" Id="SharpVectors.Model" Guid="*">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)SharpVectors.Model.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="SharpVectors.Rendering.Wpf" Guid="*">
+			<Component Win64="$(var.Win64)" Id="SharpVectors.Rendering.Wpf" Guid="*">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)SharpVectors.Rendering.Wpf.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="SharpVectors.Runtime.Wpf" Guid="*">
+			<Component Win64="$(var.Win64)" Id="SharpVectors.Runtime.Wpf" Guid="*">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)SharpVectors.Runtime.Wpf.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="AutoUpdater.NET" Guid="*">
+			<Component Win64="$(var.Win64)" Id="AutoUpdater.NET" Guid="*">
 				<File Source="$(var.SipgateFaxdrucker.TargetDir)AutoUpdater.NET.dll" KeyPath="yes" />
 			</Component>
-			<Component Id="redmon32pdfscribedll" Guid="{2211D250-F478-4FE2-BA82-E3F5F01E4880}">
-				<File Source="..\Lib\redmon32pdfscribe.dll" KeyPath="yes" />
+			<?if $(var.Platform) = x64 ?>
+				<Component Win64="$(var.Win64)" Id="redmon64pdfscribedll" Guid="{E5B5533F-33FE-4187-84F7-21BDBF7AEF1A}">
+					<File Source="..\Lib\$(var.Platform)\redmon64pdfscribe.dll" KeyPath="yes" />
+				</Component>
+				<Component Win64="$(var.Win64)" Id="gsdll64dll" Guid="{96C2E5A1-15AD-4B27-A184-7AC1C2F08409}">
+					<File Source="..\Lib\$(var.Platform)\gsdll64.dll" KeyPath="yes" />
+				</Component>
+			<?else ?>
+				<Component Win64="$(var.Win64)" Id="redmon32pdfscribedll" Guid="{2211D250-F478-4FE2-BA82-E3F5F01E4880}">					
+					<File Source="..\Lib\$(var.Platform)\redmon32pdfscribe.dll" KeyPath="yes" />
+				</Component>
+				<Component Win64="$(var.Win64)" Id="gsdll32dll" Guid="{37A9E92F-3123-42E5-AE9A-3F8E62B22EBE}">
+					<File Source="..\Lib\$(var.Platform)\gsdll32.dll" KeyPath="yes" />
+				</Component>
+			<?endif ?>
+			<Component Win64="$(var.Win64)" Id="PS5UIDLL" Guid="{EA4D173A-D1AC-46FC-93CF-CCBB13CF62A6}">
+				<File Source="..\Lib\$(var.Platform)\PS5UI.DLL" KeyPath="yes" />
 			</Component>
-			<Component Id="redmon64pdfscribedll" Guid="{E5B5533F-33FE-4187-84F7-21BDBF7AEF1A}">
-				<File Source="..\Lib\redmon64pdfscribe.dll" KeyPath="yes" />
+			<Component Win64="$(var.Win64)" Id="PSCRIPTHLP" Guid="{B96DF277-B483-46D8-8AC3-895D73E4A8CA}">
+				<File Source="..\Lib\$(var.Platform)\PSCRIPT.HLP" KeyPath="yes" />
 			</Component>
-			<Component Id="PS5UIDLL" Guid="{EA4D173A-D1AC-46FC-93CF-CCBB13CF62A6}">
-				<File Source="..\Lib\PS5UI.DLL" KeyPath="yes" />
+			<Component Win64="$(var.Win64)" Id="PSCRIPTNTF" Guid="{C33507D7-EF2C-4C40-8BC8-065640FDC4F5}">
+				<File Source="..\Lib\$(var.Platform)\PSCRIPT.NTF" KeyPath="yes" />
 			</Component>
-			<Component Id="PSCRIPTHLP" Guid="{B96DF277-B483-46D8-8AC3-895D73E4A8CA}">
-				<File Source="..\Lib\PSCRIPT.HLP" KeyPath="yes" />
+			<Component Win64="$(var.Win64)" Id="PSCRIPT5DLL" Guid="{5513735E-3BDF-4CD4-92F7-7D9F8965CCF1}">
+				<File Source="..\Lib\$(var.Platform)\PSCRIPT5.DLL" KeyPath="yes" />
 			</Component>
-			<Component Id="PSCRIPTNTF" Guid="{C33507D7-EF2C-4C40-8BC8-065640FDC4F5}">
-				<File Source="..\Lib\PSCRIPT.NTF" KeyPath="yes" />
-			</Component>
-			<Component Id="PSCRIPT5DLL" Guid="{5513735E-3BDF-4CD4-92F7-7D9F8965CCF1}">
-				<File Source="..\Lib\PSCRIPT5.DLL" KeyPath="yes" />
-			</Component>
-			<Component Id="SCPDFPRNppd" Guid="{71646658-B1EA-4347-AEEA-3E60999D14E4}">
+			<Component Win64="$(var.Win64)" Id="SCPDFPRNppd" Guid="{71646658-B1EA-4347-AEEA-3E60999D14E4}">
 				<File Source="..\Lib\SCPDFPRN.ppd" KeyPath="yes" />
 			</Component>
 		</ComponentGroup>
