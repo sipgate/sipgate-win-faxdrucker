@@ -1,0 +1,19 @@
+apiVersion: nautilus.sipgate.cloud/v1alpha1
+kind: Service
+metadata:
+  creationTimestamp: "2023-05-25T09:09:38Z"
+  name: sipgate-win-faxdrucker
+  namespace: default
+  resourceVersion: "1"
+  uid: ef91101b-e0de-4fd2-8d40-91f582107253
+spec:
+  backup: "false"
+  containerized: "false"
+  localPersistence: "true"
+  on_call_schedule: bestEffort
+  pciDssRelevant: "false"
+  ports: null
+  repositoryType: service
+  singleton: "false"
+  tlsProvider: none
+  virtualized: "false"
