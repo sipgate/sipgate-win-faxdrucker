@@ -26,7 +26,7 @@
 <?endif ?>
 
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"  xmlns:netfx ="http://schemas.microsoft.com/wix/NetFxExtension">
-	<Product Id="$(var.ProductId)" Name="$(var.ProductDisplayName) (v$(var.ProductVersion))" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.ProductAuthor)" UpgradeCode="$(var.ProductUpgradeCode)">
+	<Product Id="*" Name="$(var.ProductDisplayName) (v$(var.ProductVersion))" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.ProductAuthor)" UpgradeCode="$(var.ProductUpgradeCode)">
 		<Package InstallerVersion="408" Compressed="yes" InstallScope="perMachine"
              InstallPrivileges="elevated"
              Description="$(var.ProductDisplayName)" 
@@ -35,7 +35,7 @@
 
 		<MajorUpgrade DowngradeErrorMessage="!(loc.NewVersionAlreadyInstalled)"
                   Schedule="afterInstallValidate"
-                  AllowDowngrades="no" AllowSameVersionUpgrades="no"/>
+                  AllowDowngrades="no" AllowSameVersionUpgrades="yes"/>
 		<MediaTemplate EmbedCab="yes"/>
 		
 		<Feature Id="ProductFeature" Title="SipgateFaxdrucker" Level="1">
