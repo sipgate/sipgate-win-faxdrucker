@@ -18,6 +18,6 @@ The application links to, and distributes the following third party components:
 For development purposes a (Virtual) Machine with Windows and an IDE suitable for C# is required.
 
 * 64-bit Windows 7 or later
-* .NET Framework 4.6.1 or later
+* .NET Framework 4.6.2 or later
 * Visual Studio 19/ Rider
 * [Wix Toolset](https://wixtoolset.org/releases/)
