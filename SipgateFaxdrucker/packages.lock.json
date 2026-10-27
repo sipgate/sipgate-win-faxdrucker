@@ -40,9 +40,9 @@
       },
       "Microsoft.Rest.ClientRuntime": {
         "type": "Direct",
-        "requested": "[2.3.2, 2.3.2]",
-        "resolved": "2.3.2",
-        "contentHash": "qrPBemfdOfD7/LcSa7Hqi01KqLwCZbJ+/GSLN9BnL058/gMU9lvU+Ww19oZbjXh9jr2WzNXPhMJ/YkX9bwQCfw=="
+        "requested": "[2.3.24, 2.3.24]",
+        "resolved": "2.3.24",
+        "contentHash": "hZH7XgM3eV2jFrnq7Yf0nBD4WVXQzDrer2gEY7HMNiwio2hwDsTHO6LWuueNQAfRpNp4W7mKxcXpwXUiuVIlYw=="
       },
       "mixpanel-csharp": {
         "type": "Direct",
